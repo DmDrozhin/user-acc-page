@@ -1,8 +1,10 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
   import { computed, ref } from 'vue';
-  import FromUserName from '@/components/FormUserName.vue';
   import { ACCOUNT_PAGE_HEADER } from '@/data/designations';
+  import FormUserName from '@/components/FormUserName.vue';
+  import FormUserAvatar from '@/components/FormUserAvatar.vue';
+  import TempCropper from '@/components/TempCropper.vue';
 
   interface Props {
     options?: Record<string, unknown>;
@@ -30,7 +32,9 @@
     </div>
   </div>
   <div class="profile__wrapper">
-    <FromUserName />
+    <FormUserName />
+    <FormUserAvatar />
+    <TempCropper />
   </div>
 </template>
 

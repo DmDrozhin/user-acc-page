@@ -1,0 +1,40 @@
+/* cropper.css (минимальный набор для корректного отображения) */
+.cropper-container {
+  direction: ltr;
+  font-size: 0;
+  line-height: 0;
+  position: relative;
+  -ms-touch-action: none;
+  touch-action: none;
+  user-select: none;
+}
+
+.cropper-crop-box,
+.cropper-view-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+}
+
+.cropper-view-box {
+  display: block;
+  outline: 1px dashed #39f;
+}
+
+.cropper-crop-box {
+  display: block;
+  outline: 1px solid #39f;
+}
+
+.cropper-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #000;
+  opacity: 0.5;
+}
