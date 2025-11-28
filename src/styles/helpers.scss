@@ -1,0 +1,50 @@
+@use "sass:color";
+
+@mixin Prevent-select {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+@mixin Scrollbar($thumb: #969595, $track: transparent) {
+  overflow-y: auto;
+
+  // Chrome, Edge, Safari
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: $track;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $thumb;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    @debug color.adjust($thumb, $lightness: -10%);
+    background: $thumb;
+  }
+
+  // Firefox
+  scrollbar-width: thin; // auto | thin | none
+  scrollbar-color: #{$thumb} #{$track}; // thumb | track
+}
+@mixin Chars-limit($limit: 4) {
+  max-width: #{$limit}ch;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@mixin Lines-limit($limit: 4) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  line-clamp: $limit;
+  -webkit-line-clamp: $limit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@mixin Txt-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
