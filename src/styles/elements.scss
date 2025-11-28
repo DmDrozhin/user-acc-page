@@ -1,6 +1,12 @@
 @use '@/styles/variables.scss' as *;
 // Form Styles
 .form {
+  width: 100%;
+  &__row-wrapper {
+    width: 100%;
+    display: flex;
+    gap: 1.5rem;
+  }
   &__block {
     width: 100%;
     min-height: 90px;

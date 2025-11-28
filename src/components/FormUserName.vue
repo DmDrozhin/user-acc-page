@@ -44,8 +44,8 @@
     <div>PASS -- {{ pass }}</div>
   </div>
   <!-- First and Second Name -->
-  <div class="user-form form">
-    <div class="form__wrapper">
+  <div class="user-form user-name form">
+    <div class="form__row-wrapper">
       <div class="form__block name">
         <label class="form__label" for="name">{{ INPUTS_USER_NAME.name.label }}</label>
         <div class="form__input-wrapper">
@@ -79,7 +79,7 @@
       </div>
     </div>
     <!-- Email and Phone -->
-    <div class="form__wrapper">
+    <div class="form__row-wrapper">
       <div class="form__block email">
         <label class="form__label" for="email">{{ INPUTS_USER_NAME.email.label }}</label>
         <div class="form__input-wrapper">
@@ -111,20 +111,6 @@
       </div>
     </div>
 
-    <!-- <div class="input-block age">
-      <div>
-        <label class="form__label" for="age">Age *</label>
-        <input
-          v-model.number="user.age"
-          :class="['form__input', { 'form__input--error': errorFields?.age?.length && touched.age }]"
-          type="number"
-          :min="minAge"
-          placeholder="Age"
-          @blur="markTouched('age')" />
-        <div class="form__error" v-if="errorFields?.age?.length && touched.age">{{ errorFields?.age?.[0]?.message }}</div>
-      </div>
-    </div> -->
-
     <!-- <div>
       <button :disabled="!pass">Submit</button>
     </div> -->
@@ -146,13 +132,5 @@
     font-weight: 600;
     z-index: 10;
     background-color: #ceeccb;
-  }
-
-  .form {
-    &__wrapper {
-      width: 100%;
-      display: flex;
-      gap: 1.5rem;
-    }
   }
 </style>

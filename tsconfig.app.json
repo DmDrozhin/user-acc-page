@@ -5,8 +5,8 @@
     "src/**/__tests__/*",
     "src/components/TheWelcome.vue",
     "src/components/WelcomeItem.vue",
-    "src/components/CropComp.vue",
     "src/components/CropCompDragAndDrop.vue",
+    "src/components/CropComp.vue",
     "src/components/TempCrop.vue"
   ],
   "compilerOptions": {
