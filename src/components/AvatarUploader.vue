@@ -1,145 +1,136 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import AvatarCropperModal from "@/components/AvatarCropperModal.vue";
+  import { ref } from 'vue';
+  import AvatarCropperModal from '@/components/AvatarCropperModal.vue';
 
-const avatar = ref<string | null>(null);
-const fileInput = ref<HTMLInputElement | null>(null);
+  const avatar = ref<string | null>(null);
+  const fileInput = ref<HTMLInputElement | null>(null);
 
-const isDragOver = ref(false);
-const selectedFile = ref<File | null>(null);
+  const isDragOver = ref(false);
+  const selectedFile = ref<File | null>(null);
 
-// ---- Ошибки ----
-const errorMessage = ref<string>("");     // для текста под полем
-const toastMessage = ref<string>("");     // для toast
-let toastTimer: number | null = null;
+  // ---- Ошибки ----
+  const errorMessage = ref<string>(''); // для текста под полем
+  const toastMessage = ref<string>(''); // для toast
+  let toastTimer: number | null = null;
 
-// ---- Файл-валидация ----
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/jpg", "image/svg+xml"];
-const MAX_SIZE_MB = 2;
-const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
+  // ---- Файл-валидация ----
+  const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg', 'image/svg+xml'];
+  const MAX_SIZE_MB = 2;
+  const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
-function showError(msg: string) {
-  errorMessage.value = msg;
-  showToast(msg);
-}
-
-function showToast(msg: string) {
-  toastMessage.value = msg;
-
-  if (toastTimer) {
-    clearTimeout(toastTimer);
+  function showError(msg: string) {
+    errorMessage.value = msg;
+    showToast(msg);
   }
 
-  toastTimer = window.setTimeout(() => {
-    toastMessage.value = "";
-  }, 3000);
-}
+  function showToast(msg: string) {
+    toastMessage.value = msg;
 
-function clearError() {
-  errorMessage.value = "";
-}
+    if (toastTimer) {
+      clearTimeout(toastTimer);
+    }
 
-function validateFile(file: File): boolean {
-  clearError();
-
-  if (!ALLOWED_TYPES.includes(file.type)) {
-    showError("Недопустимый формат. Разрешено: JPG, PNG, WEBP, JPG, SVG.");
-    return false;
+    toastTimer = window.setTimeout(() => {
+      toastMessage.value = '';
+    }, 3000);
   }
 
-  if (file.size > MAX_SIZE_BYTES) {
-    showError(`Файл слишком большой. Максимум ${MAX_SIZE_MB} MB.`);
-    return false;
+  function clearError() {
+    errorMessage.value = '';
   }
 
-  return true;
-}
+  function validateFile(file: File): boolean {
+    clearError();
 
-// ---- Файловый диалог ----
-function openFileDialog() {
-  if (!avatar.value) {
-    fileInput.value?.click();
-  }
-}
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      showError('Недопустимый формат. Разрешено: JPG, PNG, WEBP, JPG, SVG.');
+      return false;
+    }
 
-// Выбор через input
-function onFileChange(e: Event) {
-  const input = e.target as HTMLInputElement;
-  const file = input.files?.[0];
+    if (file.size > MAX_SIZE_BYTES) {
+      showError(`Файл слишком большой. Максимум ${MAX_SIZE_MB} MB.`);
+      return false;
+    }
 
-  if (!file) return;
-
-  if (!validateFile(file)) {
-    input.value = "";
-    return;
+    return true;
   }
 
-  selectedFile.value = file;
-}
+  // ---- Файловый диалог ----
+  function openFileDialog() {
+    if (!avatar.value) {
+      fileInput.value?.click();
+    }
+  }
 
-// ---- Drag-and-drop ----
-function onDragOver(e: DragEvent) {
-  if (avatar.value) return;
-  e.preventDefault();
-  isDragOver.value = true;
-}
+  // Выбор через input
+  function onFileChange(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
 
-function onDragLeave() {
-  isDragOver.value = false;
-}
+    if (!file) return;
 
-function onDrop(e: DragEvent) {
-  if (avatar.value) return;
-  e.preventDefault();
-  isDragOver.value = false;
+    if (!validateFile(file)) {
+      input.value = '';
+      return;
+    }
 
-  const file = e.dataTransfer?.files?.[0];
-  if (!file) return;
+    selectedFile.value = file;
+  }
 
-  if (!validateFile(file)) return;
+  // ---- Drag-and-drop ----
+  function onDragOver(e: DragEvent) {
+    if (avatar.value) return;
+    e.preventDefault();
+    isDragOver.value = true;
+  }
 
-  selectedFile.value = file;
-}
+  function onDragLeave() {
+    isDragOver.value = false;
+  }
 
-// ---- Приём результата из модалки ----
-function onCropComplete(result: string) {
-  avatar.value = result;
-  selectedFile.value = null;
-  clearError();
-}
+  function onDrop(e: DragEvent) {
+    if (avatar.value) return;
+    e.preventDefault();
+    isDragOver.value = false;
 
-// ---- Удаление аватара ----
-function removeAvatar(e: Event) {
-  e.stopPropagation();
-  avatar.value = null;
-}
+    const file = e.dataTransfer?.files?.[0];
+    if (!file) return;
+
+    if (!validateFile(file)) return;
+
+    selectedFile.value = file;
+  }
+
+  // ---- Приём результата из модалки ----
+  function onCropComplete(result: string) {
+    avatar.value = result;
+    selectedFile.value = null;
+    clearError();
+  }
+
+  // ---- Удаление аватара ----
+  function removeAvatar(e: Event) {
+    e.stopPropagation();
+    avatar.value = null;
+  }
 </script>
 
 <template>
   <div class="avatar-uploader">
-
     <!-- Toast -->
     <div v-if="toastMessage" class="toast">
       {{ toastMessage }}
     </div>
 
-    <input
-      ref="fileInput"
-      type="file"
-      accept="image/*"
-      class="hidden"
-      @change="onFileChange"
-    />
+    <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="onFileChange" />
 
     <div
       class="upload-area"
-      :class="{ 'drag-over': isDragOver, 'disabled': avatar }"
+      :class="{ 'drag-over': isDragOver, disabled: avatar }"
       @click="openFileDialog"
       @dragover="onDragOver"
       @dragleave="onDragLeave"
-      @drop="onDrop"
-    >
-
+      @drop="onDrop">
       <template v-if="!avatar">
         <div class="placeholder">
           <span class="icon">📷</span>
@@ -151,122 +142,129 @@ function removeAvatar(e: Event) {
         <div class="avatar-wrapper">
           <img :src="avatar" class="avatar-image" />
 
-          <button class="delete-btn" @click="removeAvatar">
-            ✕
-          </button>
+          <button class="delete-btn" @click="removeAvatar">✕</button>
         </div>
       </template>
     </div>
 
     <!-- Ошибка под полем -->
-    <p v-if="errorMessage" class="error-text">
-      {{ errorMessage }}
-    </p>
-
+    <div v-if="errorMessage" class="error-text">{{ errorMessage }}</div>
     <!-- Модалка -->
-    <AvatarCropperModal
-      v-if="selectedFile"
-      :file="selectedFile"
-      @done="onCropComplete"
-      @cancel="selectedFile = null"
-    />
+    <AvatarCropperModal v-if="selectedFile" :file="selectedFile" @done="onCropComplete" @cancel="selectedFile = null" />
   </div>
 </template>
 
-<style scoped>
-/* ---------- Upload Area ---------- */
-.upload-area {
-  border: 2px dashed #ccc;
-  border-radius: 12px;
-  padding: 20px;
-  cursor: pointer;
-  text-align: center;
-  position: relative;
-  transition: 0.25s;
+<style lang="scss" scoped>
+  /* ---------- Upload Area ---------- */
+  .upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+    transition: 0.25s;
+    &.disabled {
+      opacity: 0.6;
+      pointer-events: none;
+      border-style: solid;
+      cursor: default;
+    }
+    &.drag-over {
+      border-color: #3b82f6;
+      background-color: #e0ecff;
+  }
 }
 
-.upload-area.disabled {
-  border-style: solid;
-  cursor: default;
-}
 
-.upload-area.drag-over {
-  border-color: #3b82f6;
-  background-color: #e0ecff;
-}
+  // .upload-area.disabled {
+  //   border-style: solid;
+  //   cursor: default;
+  // }
 
-.placeholder {
-  color: #666;
-}
+  // .upload-area.drag-over {
+  //   border-color: #3b82f6;
+  //   background-color: #e0ecff;
+  // }
 
-.icon {
-  font-size: 48px;
-}
+  .placeholder {
+    color: #666;
+  }
 
-/* ---------- Avatar ---------- */
-.avatar-wrapper {
-  position: relative;
-  display: inline-block;
-}
+  .icon {
+    font-size: 48px;
+  }
 
-.avatar-image {
-  width: 128px;
-  height: 128px;
-  border-radius: 50%;
-  object-fit: cover;
-}
+  /* ---------- Avatar ---------- */
+  .avatar-wrapper {
+    position: relative;
+    display: inline-block;
+  }
 
-/* ---------- Delete button ---------- */
-.delete-btn {
-  position: absolute;
-  top: -6px;
-  right: -6px;
-  background: #ff4d4f;
-  border: none;
-  color: white;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 13px;
-  line-height: 26px;
-  text-align: center;
-  padding: 0;
-  box-shadow: 0 0 4px rgba(0,0,0,0.25);
-  transition: 0.2s;
-}
+  .avatar-image {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 
-.delete-btn:hover {
-  background: #d9363e;
-}
+  /* ---------- Delete button ---------- */
+  .delete-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff4d4f;
+    border: none;
+    color: white;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 13px;
+    line-height: 26px;
+    text-align: center;
+    padding: 0;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+    transition: 0.2s;
+  }
 
-/* ---------- Error text ---------- */
-.error-text {
-  margin-top: 8px;
-  color: #d9363e;
-  font-size: 14px;
-  text-align: left;
-}
+  .delete-btn:hover {
+    background: #d9363e;
+  }
 
-/* ---------- Toast ---------- */
-.toast {
-  position: absolute;
-  right: 0;
-  top: -10px;
-  transform: translateY(-100%);
-  background: #ff4d4f;
-  color: white;
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 14px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  animation: fadeInOut 0.3s ease;
-  max-width: 240px;
-}
+  /* ---------- Error text ---------- */
+  .error-text {
+    margin-top: 0.25rem;
+    margin-left: 2rem;
+    font-size: 0.75rem;
+    color: $error-color;
+  }
 
-/* Анимация появления */
-@keyframes fadeInOut {
-  from { opacity: 0; transform: translateY(-110%); }
-  to { opacity: 1; transform: translateY(-100%); }
-}
+  /* ---------- Toast ---------- */
+  .toast {
+    position: absolute;
+    right: 0;
+    top: -10px;
+    transform: translateY(-100%);
+    background: #ff4d4f;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 0.3s ease;
+    max-width: 240px;
+  }
+
+  /* Анимация появления */
+  @keyframes fadeInOut {
+    from {
+      opacity: 0;
+      transform: translateY(-110%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(-100%);
+    }
+  }
 </style>
