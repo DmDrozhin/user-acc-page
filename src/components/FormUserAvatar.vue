@@ -37,7 +37,6 @@
 <template>
   <div class="user-form user-avatar form">
     <div class="form__row-wrapper">
-
       <div class="form__block age">
         <div>
           <label class="form__label" for="age">Age *</label>
@@ -51,16 +50,13 @@
           <div class="form__error" v-if="errorFields?.age?.length && touched.age">{{ errorFields?.age?.[0]?.message }}</div>
         </div>
       </div>
-      <div>
-        <AvatarUploader />
-      </div>
+      <AvatarUploader />
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
   @use '@/styles/elements.scss' as *;
-
 </style>
 
 <style lang="scss"></style>
