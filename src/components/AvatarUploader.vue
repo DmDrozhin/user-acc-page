@@ -9,8 +9,8 @@
   const selectedFile = ref<File | null>(null);
 
   // ---- Ошибки ----
-  const errorMessage = ref<string>(''); // для текста под полем
-  const toastMessage = ref<string>(''); // для toast
+  const errorMessage = ref<string>('');
+  const toastMessage = ref<string>('');
   let toastTimer: number | null = null;
 
   // ---- Файл-валидация ----
@@ -25,22 +25,30 @@
     invalidType: string;
     tooLarge: string;
     uploadPrompt: string;
+    infoFileFormat: string;
+    infoFileSize: string;
   }
   const UPLOAD_MESSAGES: Record<Lang, UploadMessage> = {
     uk: {
-      invalidType: `Недопустимий формат. Дозволено: JPG, PNG, WEBP, JPG, SVG.`,
+      invalidType: `Недопустимий формат. Дозволено: JPG, PNG, WEBP, SVG.`,
       tooLarge: `Файл занадто великий. Максимум ${MAX_SIZE_MB} MB.`,
-      uploadPrompt: 'Завантажте аватар або перетягніть файл'
+      uploadPrompt: 'Завантажте аватар або перетягніть файл',
+      infoFileFormat: 'Формат: JPG, PNG, WEBP, SVG',
+      infoFileSize: 'Максимальний розмір:'
     },
     en: {
-      invalidType: `Invalid format. Allowed: JPG, PNG, WEBP, JPG, SVG.`,
+      invalidType: `Invalid format. Allowed: JPG, PNG, WEBP, SVG.`,
       tooLarge: `File is too large. Maximum ${MAX_SIZE_MB} MB.`,
-      uploadPrompt: 'Upload an avatar or drag and drop a file'
+      uploadPrompt: 'Upload an avatar or drag and drop a file',
+      infoFileFormat: 'Format: JPG, PNG, WEBP, SVG',
+      infoFileSize: 'Maximum size:'
     },
     ru: {
-      invalidType: `Недопустимый формат. Разрешено: JPG, PNG, WEBP, JPG, SVG.`,
+      invalidType: `Недопустимый формат. Разрешено: JPG, PNG, WEBP, SVG.`,
       tooLarge: `Файл слишком большой. Максимум ${MAX_SIZE_MB} MB.`,
-      uploadPrompt: 'Загрузите аватар или перетащите файл'
+      uploadPrompt: 'Загрузите аватар или перетащите файл',
+      infoFileFormat: 'Формат: JPG, PNG, WEBP, SVG',
+      infoFileSize: 'Максимальный размер:'
     }
   };
 
@@ -158,38 +166,58 @@
       @drop="onDrop">
       <template v-if="!avatar">
         <div class="upload-area__placeholder">
-          <svg class="upload-area__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path
-              d="M17 17V21H19V17H21L18 14L15 17H17M11 4C8.8 4 7 5.8 7 8S8.8 12 11 12 15 10.2 15 8 13.2 4 11 4M11 14C6.6 14 3 15.8 3 18V20H12.5C12.2 19.2 12 18.4 12 17.5C12 16.3 12.3 15.2 12.9 14.1C12.3 14.1 11.7 14 11 14" />
-          </svg>
-          <div>{{ UPLOAD_MESSAGES[currentLang]?.uploadPrompt || UPLOAD_MESSAGES['en'].uploadPrompt }}</div>
+          <div class="wrapper-base">
+            <div>{{ UPLOAD_MESSAGES[currentLang]?.uploadPrompt || UPLOAD_MESSAGES['en'].uploadPrompt }}</div>
+            <svg
+              class="upload-area__icon"
+              :class="{ error: errorMessage }"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24">
+              <path
+                d="M17 17V21H19V17H21L18 14L15 17H17M11 4C8.8 4 7 5.8 7 8S8.8 12 11 12 15 10.2 15 8 13.2 4 11 4M11 14C6.6 14 3 15.8 3 18V20H12.5C12.2 19.2 12 18.4 12 17.5C12 16.3 12.3 15.2 12.9 14.1C12.3 14.1 11.7 14 11 14" />
+            </svg>
+          </div>
+          <hr class="base-divider" />
+          <div class="upload-area__small-txt">
+            {{ UPLOAD_MESSAGES[currentLang]?.infoFileFormat || UPLOAD_MESSAGES['en'].infoFileFormat }}
+          </div>
+          <div class="upload-area__small-txt">
+            {{ UPLOAD_MESSAGES[currentLang]?.infoFileSize || UPLOAD_MESSAGES['en'].infoFileSize }} {{ MAX_SIZE_MB }} MB
+          </div>
         </div>
       </template>
 
       <template v-else>
         <div class="avatar__wrapper">
+          <button class="delete-btn avatar" @click="removeAvatar" aria-label="Remove avatar">✕</button>
           <img :src="avatar" class="avatar__image" alt="user avatar" />
-          <button class="delete-btn" @click="removeAvatar" aria-label="Remove avatar">✕</button>
         </div>
       </template>
     </div>
-    <!-- Ошибка под полем -->
+    <!-- Error message below the field -->
     <div v-if="errorMessage" class="upload-area__error-message">{{ errorMessage }}</div>
-
-    <!-- Модалка -->
+    <!-- Modal window -->
     <AvatarCropperModal v-if="selectedFile" :file="selectedFile" @done="onCropComplete" @cancel="selectedFile = null" />
   </div>
 </template>
 
 <style lang="scss" scoped>
+  @use '@/styles/elements.scss' as *;
   .avatar-uploader {
+    width: 100%;
+    max-width: 215px;
     min-height: 166px;
-    width: fit-content;
     &__input {
       display: none;
     }
   }
+  .standard-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
   .upload-area {
+    width: 100%;
     border: 1px dashed $border-color;
     border-radius: $border-radius;
     padding: $spacing-base;
@@ -199,22 +227,27 @@
     position: relative;
     transition: 0.25s;
     &__placeholder {
-      margin-bottom: 0.5rem;
-      font-weight: 400;
-      color: $text-primary;
-      font-size: 0.875rem;
-      color: $text-secondary;
+      font-size: $font-size-md;
       text-wrap-style: balance;
     }
+    &__small-txt {
+      text-align: left;
+      font-size: $font-size-sm;
+      color: $text-secondary;
+    }
     &__icon {
+      flex-shrink: 0;
       width: 3rem;
       fill: $primary-color;
       filter: opacity(0.5);
+      &.error {
+        fill: $error-color;
+      }
     }
     &__error-message {
       text-align: center;
-      margin-top: 0.25rem;
-      font-size: 0.75rem;
+      margin: 0.25rem 0.5rem;
+      font-size: $font-size-sm;
       color: $error-color;
     }
     &.disabled {
@@ -232,50 +265,53 @@
     &__wrapper {
       position: relative;
       display: inline-block;
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        display: grid;
+        place-content: center;
+        color: $surface;
+        line-height: 1;
+        transition: $transition;
+        background-color: transparent;
+        z-index: 5;
+      }
+      &:has(.delete-btn:hover)::before {
+        content: '✕';
+        background-color: $modal-overlay;
+      }
     }
     &__image {
-      width: 128px;
-      height: 128px;
+      display: block;
+      $size: calc($spacing-xl * 4); // 64px
+      width: $size;
+      height: $size;
       border-radius: 50%;
       object-fit: cover;
+      position: relative;
     }
   }
 
-  .delete-btn {
-    $size: 26px;
-    background: $surface;
-    cursor: pointer;
+  .delete-btn.avatar {
     position: absolute;
-    padding: 0;
     top: -6px;
     right: -6px;
-    border: none;
-    color: $text-primary;
-    font-size: 12px;
-    line-height: $size;
-    width: $size;
-    height: $size;
-    border-radius: 50%;
-    text-align: center;
-    border: 1px solid $border-color;
-    transition: $transition;
-    &:hover {
-      box-shadow: $shadow-md;
-    }
     z-index: 10;
   }
 
   .toast {
     position: absolute;
     right: 0;
-    top: -10px;
+    top: -($spacing-sm);
     transform: translateY(-100%);
-    background: #ff4d4f;
-    color: white;
+    background: $error-color;
+    color: $surface;
     padding: 10px 14px;
-    border-radius: 6px;
-    font-size: 14px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: $border-radius-sm;
+    font-size: $font-size-md;
+    box-shadow: $box-shadow;
     animation: fadeInOut 0.3s ease;
     max-width: 240px;
   }

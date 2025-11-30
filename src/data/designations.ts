@@ -21,11 +21,14 @@ export const ACCOUNT_PAGE_HEADER: AccPageHeader = {
 };
 
 // Form input validation params User Name
-
+type GenderOptions = 'Not selected' | 'Male' | 'Female' | 'Other';
 interface FieldInput {
   icon?: string;
   label?: string;
   placeholder?: string;
+  options?: GenderOptions[];
+  minimum?: number;
+  maximum?: number;
 }
 interface InputsUserName {
   name: FieldInput;
@@ -41,12 +44,12 @@ export const INPUTS_USER_NAME: InputsUserName = {
   },
   secondName: {
     icon: iconsMap['account-plus.svg'],
-    label: 'Second Name',
+    label: 'Second Name *',
     placeholder: 'Second Name'
   },
   email: {
     icon: iconsMap['mail.svg'],
-    label: 'Email *',
+    label: 'Email',
     placeholder: 'Email'
   },
   phone: {
@@ -54,9 +57,30 @@ export const INPUTS_USER_NAME: InputsUserName = {
     label: 'Phone Number *',
     placeholder: 'Phone Number'
   }
-  // age: {
-  //   icon: iconsMap['calendar-range.svg'],
-  //   label: 'Age',
-  //   placeholder: 'Age'
-  // }
+};
+
+// Form input validation params User Avatar
+interface InputsUserAvatar {
+  birthDate: FieldInput;
+  gender: FieldInput;
+  age: FieldInput;
+}
+export const INPUTS_USER_AVATAR: InputsUserAvatar = {
+  birthDate: {
+    icon: iconsMap['calendar-range.svg'],
+    label: 'Date of Birth',
+    placeholder: 'Date of Birth',
+  },
+  gender: {
+    icon: iconsMap['gender-male-female.svg'],
+    label: 'Gender',
+    placeholder: 'Select Gender',
+    options: ['Not selected', 'Male', 'Female', 'Other']
+  },
+  age: {
+    icon: iconsMap['account-clock.svg'],
+    label: 'Age',
+    placeholder: 'Age',
+    minimum: 16
+  }
 };

@@ -38,7 +38,6 @@
 
 <style lang="scss" scoped>
   @use '@/styles/elements.scss' as *;
-
   .profile {
     &__wrapper {
       position: relative;
@@ -66,7 +65,7 @@
     }
     &__subtitle {
       font-size: 1rem;
-      color: gray;
+      color: $text-secondary;
     }
   }
 </style>
