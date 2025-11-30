@@ -32,9 +32,8 @@ interface FieldInput {
 }
 interface InputsUserName {
   name: FieldInput;
+  middleName: FieldInput;
   secondName: FieldInput;
-  email: FieldInput;
-  phone: FieldInput;
 }
 export const INPUTS_USER_NAME: InputsUserName = {
   name: {
@@ -42,11 +41,26 @@ export const INPUTS_USER_NAME: InputsUserName = {
     label: 'Name *',
     placeholder: 'Name'
   },
+  middleName: {
+    icon: '',
+    label: 'Middle Name',
+    placeholder: 'Middle Name'
+  },
   secondName: {
     icon: iconsMap['account-plus.svg'],
     label: 'Second Name *',
     placeholder: 'Second Name'
-  },
+  }
+};
+
+// Form input validation params User Avatar
+interface InputsUserAvatar {
+  email: FieldInput;
+  phone: FieldInput;
+  birthDate: FieldInput;
+  gender: FieldInput;
+}
+export const INPUTS_USER_META: InputsUserAvatar = {
   email: {
     icon: iconsMap['mail.svg'],
     label: 'Email',
@@ -56,31 +70,46 @@ export const INPUTS_USER_NAME: InputsUserName = {
     icon: iconsMap['phone.svg'],
     label: 'Phone Number *',
     placeholder: 'Phone Number'
-  }
-};
-
-// Form input validation params User Avatar
-interface InputsUserAvatar {
-  birthDate: FieldInput;
-  gender: FieldInput;
-  age: FieldInput;
-}
-export const INPUTS_USER_AVATAR: InputsUserAvatar = {
+  },
   birthDate: {
     icon: iconsMap['calendar-range.svg'],
     label: 'Date of Birth',
-    placeholder: 'Date of Birth',
+    placeholder: 'Date of Birth'
   },
   gender: {
     icon: iconsMap['gender-male-female.svg'],
     label: 'Gender',
     placeholder: 'Select Gender',
     options: ['Not selected', 'Male', 'Female', 'Other']
+  }
+};
+
+// Form input validation params User Address
+interface InputsUserAddress {
+  country: FieldInput;
+  zip: FieldInput;
+  city: FieldInput;
+  address: FieldInput;
+}
+export const INPUTS_USER_ADDRESS: InputsUserAddress = {
+  country: {
+    icon: iconsMap['earth.svg'],
+    label: 'Country *',
+    placeholder: 'Country'
   },
-  age: {
-    icon: iconsMap['account-clock.svg'],
-    label: 'Age',
-    placeholder: 'Age',
-    minimum: 16
+  zip: {
+    icon: iconsMap['map-marker-radius.svg'],
+    label: 'ZIP Code *',
+    placeholder: 'ZIP Code'
+  },
+  city: {
+    icon: iconsMap['city.svg'],
+    label: 'City *',
+    placeholder: 'City'
+  },
+  address: {
+    icon: iconsMap['home-map-marker.svg'],
+    label: 'Address *',
+    placeholder: 'Address'
   }
 };

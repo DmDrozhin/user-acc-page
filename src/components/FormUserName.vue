@@ -1,15 +1,16 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
-  import { reactive, watch } from 'vue';
+  import { computed, reactive } from 'vue';
   import type { Rules } from 'async-validator';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
   import { INPUTS_USER_NAME } from '@/data/designations.ts';
+  import AvatarUploader from '@/components/AvatarUploader.vue';
 
-  const user = reactive({ name: '', secondName: '', email: '', phone: '', age: '' });
+  const user = reactive({ name: '', middleName: '', secondName: '' });
   const touched = reactive({
     name: false,
-    secondName: false,
-    email: false,
-    phone: false
+    middleName: false,
+    secondName: false
   });
   const markTouched = (field: keyof typeof touched) => {
     touched[field] = true;
@@ -17,50 +18,66 @@
 
   const rules: Rules = {
     name: [{ type: 'string', min: 3, max: 20, required: true, message: 'Name is required' }],
-    secondName: [{ type: 'string', min: 3, max: 20, required: true, message: 'Second Name is required' }],
-    phone: [
-      { required: true, message: 'Phone number is required' },
-      { type: 'string', message: 'Phone number must be a string' },
-      { pattern: /^\+?[0-9]{1,4}?[-.\s()]?[0-9]{1,4}[-.\s()]?[0-9]{1,9}$/, message: 'Phone number is not valid' },
-      { min: 8, max: 15, message: 'Phone number must be between 8 and 15 characters' }
-    ],
-    email: [{ type: 'email', required: false, max: 150, message: 'Email is not valid' }]
+    middleName: [{ type: 'string', min: 3, max: 20, required: false }],
+    secondName: [{ type: 'string', min: 3, max: 20, required: true, message: 'Second Name is required' }]
   };
 
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
-  watch(isFinished, (val) => {
-    console.log('isFinished value', val);
-    // Trigger validation on user data change
-  });
+  const isValidForm = computed(() => pass && isFinished);
 </script>
 
 <template>
-  <div class="flags">
-    <div>IS-FINISHED-- {{ isFinished }}</div>
-    <div>PASS -- {{ pass }}</div>
-  </div>
   <!-- First and Second Name -->
-  <div class="user-form user-name form">
-    <div class="form__row-wrapper">
-      <div class="form__block name">
-        <label class="form__label" for="name">{{ INPUTS_USER_NAME.name.label }}</label>
-        <div class="form__input-wrapper">
-          <img class="simple-icon" :src="INPUTS_USER_NAME.name.icon" alt="Name icon" />
-          <input
-            :class="['form__input', { 'form__input--error': errorFields?.name?.length && touched.name }]"
-            id="name"
-            v-model.trim="user.name"
-            type="text"
-            :placeholder="INPUTS_USER_NAME.name.placeholder"
-            @blur="markTouched('name')" />
+  <div class="form user-name">
+    <div class="form__column-wrapper avatar">
+      <AvatarUploader class="form__avatar-uploader" />
+    </div>
+    <div class="form__column-wrapper">
+      <div class="form__row-wrapper name">
+        <div class="form__block name">
+          <label class="form__label" for="name">{{ INPUTS_USER_NAME.name.label }}</label>
+          <div class="form__input-wrapper">
+            <img class="simple-icon" v-if="INPUTS_USER_NAME.name.icon" :src="INPUTS_USER_NAME.name.icon" alt="Name icon" />
+            <input
+              :class="['form__input', { 'form__input--error': errorFields?.name?.length && touched.name }]"
+              id="name"
+              v-model.trim="user.name"
+              type="text"
+              :placeholder="INPUTS_USER_NAME.name.placeholder"
+              @blur="markTouched('name')" />
+          </div>
+          <div class="form__error" v-if="errorFields?.name?.length && touched.name">{{ errorFields?.name?.[0]?.message }}</div>
         </div>
-        <div class="form__error" v-if="errorFields?.name?.length && touched.name">{{ errorFields?.name?.[0]?.message }}</div>
-      </div>
 
+        <div class="form__block middle-name">
+          <label class="form__label" for="middle-name">{{ INPUTS_USER_NAME.middleName.label }}</label>
+          <div class="form__input-wrapper no-icon">
+            <img
+              class="simple-icon"
+              v-if="INPUTS_USER_NAME.middleName.icon"
+              :src="INPUTS_USER_NAME.middleName.icon"
+              alt="Middle Name icon" />
+            <input
+              :class="['form__input', { 'form__input--error': errorFields?.middleName?.length && touched.middleName }]"
+              id="middle-name"
+              v-model.trim="user.middleName"
+              type="text"
+              :placeholder="INPUTS_USER_NAME.middleName.placeholder"
+              @blur="markTouched('middleName')" />
+          </div>
+          <div class="form__error" v-if="errorFields?.middleName?.length && touched.middleName">
+            {{ errorFields?.middleName?.[0]?.message }}
+          </div>
+        </div>
+      </div>
       <div class="form__block second-name">
         <label class="form__label" for="second-name">{{ INPUTS_USER_NAME.secondName.label }}</label>
         <div class="form__input-wrapper">
-          <img class="simple-icon" :src="INPUTS_USER_NAME.secondName.icon" alt="Second Name icon" />
+          <img
+            class="simple-icon"
+            v-if="INPUTS_USER_NAME.secondName.icon"
+            :src="INPUTS_USER_NAME.secondName.icon"
+            alt="Second Name icon" />
           <input
             :class="['form__input', { 'form__input--error': errorFields?.secondName?.length && touched.secondName }]"
             id="second-name"
@@ -74,56 +91,32 @@
         </div>
       </div>
     </div>
-    <!-- Email and Phone -->
-    <div class="form__row-wrapper">
-      <div class="form__block phone">
-        <label class="form__label" for="phone">{{ INPUTS_USER_NAME.phone.label }}</label>
-        <div class="form__input-wrapper">
-          <img class="simple-icon" :src="INPUTS_USER_NAME.phone.icon" alt="Phone icon" />
-          <input
-            :class="['form__input', { 'form__input--error': errorFields?.phone?.length && touched.phone }]"
-            id="phone"
-            v-model.trim="user.phone"
-            type="text"
-            :placeholder="INPUTS_USER_NAME.phone.placeholder"
-            @blur="markTouched('phone')" />
-        </div>
-        <div class="form__error" v-if="errorFields?.phone?.length && touched.phone">{{ errorFields?.phone?.[0]?.message }}</div>
-      </div>
-      <div class="form__block email">
-        <label class="form__label" for="email">{{ INPUTS_USER_NAME.email.label }}</label>
-        <div class="form__input-wrapper">
-          <img class="simple-icon" :src="INPUTS_USER_NAME.email.icon" alt="Email icon" />
-          <input
-            :class="['form__input', { 'form__input--error': errorFields?.email?.length && touched.email }]"
-            id="email"
-            v-model.trim="user.email"
-            type="text"
-            :placeholder="INPUTS_USER_NAME.email.placeholder"
-            @blur="markTouched('email')" />
-        </div>
-        <div class="form__error" v-if="errorFields?.email?.length && touched.email">
-          {{ errorFields?.email?.[0]?.message }}
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
   @use '@/styles/elements.scss' as *;
-  .flags {
-    position: absolute;
-    top: -2rem;
-    right: -1rem;
-    display: inline-block;
-    border: 1px solid lightblue;
-    border-radius: 1rem;
-    padding: 1rem;
-    margin-bottom: 2rem;
-    margin-top: 1rem;
-    font-weight: 600;
-    z-index: 10;
-    background-color: #ceeccb;
+  .form {
+    &__column-wrapper.avatar {
+      width: fit-content;
+      flex-shrink: 0;
+    }
+  }
+  @media screen and (max-width: $breakpoint-lg) {
+    // 1024px
+    .form {
+      &__row-wrapper.name {
+        flex-wrap: wrap;
+      }
+    }
+  }
+  @media screen and (max-width: $breakpoint-md) {
+    // 768px
+    .form {
+      flex-wrap: wrap;
+      &__column-wrapper.avatar {
+        width: 100%;
+      }
+    }
   }
 </style>

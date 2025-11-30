@@ -3,7 +3,8 @@
   import { computed, ref } from 'vue';
   import { ACCOUNT_PAGE_HEADER } from '@/data/designations';
   import FromUserName from '@/components/FormUserName.vue';
-  import FormUserAvatar from '@/components/FormUserAvatar.vue';
+  import FormUserMeta from '@/components/FormUserMeta.vue';
+  import FormUserAddress from '@/components/FormUserAddress.vue';
 
   interface Props {
     options?: Record<string, unknown>;
@@ -30,18 +31,19 @@
       </div>
     </div>
   </div>
-  <div class="profile__wrapper">
+  <div class="profile__forms-wrapper">
     <FromUserName />
-    <FormUserAvatar />
+    <FormUserMeta />
+    <FormUserAddress />
   </div>
 </template>
 
 <style lang="scss" scoped>
   @use '@/styles/elements.scss' as *;
   .profile {
-    &__wrapper {
+    &__forms-wrapper {
       position: relative;
-      padding: 2rem 1.5rem;
+      padding: 1.5rem;
       margin: 0 auto;
       background-color: $surface;
       border-radius: $radius-md;
@@ -52,13 +54,13 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 2rem 1.5rem;
+    padding: 1.5rem;
     margin-bottom: 2rem;
     background-color: $surface;
     border-radius: $radius-md;
     box-shadow: $shadow-md;
-    &__wrapper {
-    }
+    // &__wrapper {
+    // }
     &__title {
       font-size: 1.5rem;
       font-weight: 600;
@@ -69,5 +71,3 @@
     }
   }
 </style>
-
-<style lang="scss"></style>
