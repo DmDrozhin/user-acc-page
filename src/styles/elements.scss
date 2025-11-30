@@ -5,16 +5,19 @@
   &__row-wrapper {
     width: 100%;
     display: flex;
-    gap: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    @media screen and (min-width: $breakpoint-md) {
+      flex-wrap: nowrap;
+    }
   }
   &__block {
     width: 100%;
     min-height: 90px;
-    margin-bottom: 1.5rem;
     outline: 1px solid rgb(241, 239, 239);
   }
   &__input-wrapper {
-    position: relative;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -31,7 +34,9 @@
     padding: 0.75rem 1rem;
     border: 1px solid $border-color;
     border-radius: $radius-md;
+    font-family: $font-family;
     font-size: 0.875rem;
+    color: $text-secondary;
     background: $surface;
     transition: $transition;
     &:focus {
@@ -114,3 +119,29 @@
   border-radius: 50%;
   filter: opacity(0.5);
 }
+.wrapper-base {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+// Delete Button
+  .delete-btn {
+    $size: 26px;
+    background: $surface;
+    cursor: pointer;
+    padding: 0;
+    border: none;
+    color: $text-primary;
+    font-size: $font-size-sm;
+    line-height: $size;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    text-align: center;
+    border: 1px solid $border-color;
+    transition: $transition;
+    &:hover {
+      box-shadow: $shadow-md;
+    }
+    z-index: 10;
+  }
