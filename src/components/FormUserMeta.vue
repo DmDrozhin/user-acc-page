@@ -14,7 +14,6 @@
   const markTouched = (field: keyof typeof touched) => {
     touched[field] = true;
   };
-
   const rules: Rules = {
     phone: [
       { required: true, message: 'Phone number is required' },

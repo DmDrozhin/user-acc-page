@@ -238,4 +238,102 @@
   #cardNumber {
     letter-spacing: 0.2rem;
   }
+  .card {
+    width: 100%;
+    max-width: 320px;
+    min-height: 200px;
+    border-radius: $radius-lg;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: $surface;
+    box-shadow: $shadow-lg;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.6s;
+    }
+
+    &:hover::before {
+      transform: translateX(100%);
+    }
+    &--visa {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    &--mastercard {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    &--amex {
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    &--mir {
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    }
+    &--discover {
+      background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    }
+    &--unionpay {
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    }
+    &--unknown {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    &__title {
+      font-size: $font-size-md;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.2rem;
+      margin-bottom: 0.85rem;
+    }
+    &__pay-system {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: $font-size-md;
+      font-weight: 600;
+      text-transform: uppercase;
+      opacity: 0.8;
+      width: 80px;
+      height: 40px;
+      object-fit: contain;
+    }
+    &__chip {
+      align-self: flex-end;
+      width: 50px;
+      height: 40px;
+      object-fit: contain;
+      margin-bottom: 0.5rem;
+    }
+    &__number {
+      font-size: $font-size-lg;
+      font-weight: 600;
+      letter-spacing: 0.2rem;
+      text-shadow: $text-primary 1px 1px 2px;
+    }
+
+    &__holder {
+      font-size: $font-size-md;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1rem;
+    }
+
+    &__expiry {
+      font-size: $font-size-md;
+      font-weight: 500;
+      align-self: flex-end;
+      letter-spacing: 0.2rem;
+    }
+  }
 </style>

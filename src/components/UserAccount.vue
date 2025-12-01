@@ -36,6 +36,7 @@
     <FromUserName />
     <FormUserMeta />
     <FormUserAddress />
+    <hr class="profile__divider" />
     <FormUserBankCard />
   </div>
 </template>
@@ -50,6 +51,11 @@
       background-color: $surface;
       border-radius: $radius-md;
       box-shadow: $shadow-md;
+    }
+    &__divider {
+      margin: 0.5rem 0 1.5rem 0;
+      border: none;
+      border-top: 1px solid $border-color;
     }
   }
   .header-block {
