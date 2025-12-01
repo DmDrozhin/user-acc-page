@@ -50,9 +50,11 @@
 </script>
 
 <template>
-  <div class="form user-meta">
+  <form class="form user-meta">
+    <div class="form__indicator" :class="{ form_ready: pass }"></div>
     <!-- Email and Phone -->
     <div class="form__row-wrapper phone-email">
+      <!-- Phone -->
       <div class="form__block phone">
         <label class="form__label" for="phone">{{ INPUTS_USER_META.phone.label }}</label>
         <div class="form__input-wrapper">
@@ -67,6 +69,7 @@
         </div>
         <div class="form__error" v-if="errorFields?.phone?.length && touched.phone">{{ errorFields?.phone?.[0]?.message }}</div>
       </div>
+      <!-- Email -->
       <div class="form__block email">
         <label class="form__label" for="email">{{ INPUTS_USER_META.email.label }}</label>
         <div class="form__input-wrapper">
@@ -84,8 +87,10 @@
         </div>
       </div>
     </div>
+    <!-- Birth Date and Gender -->
     <div class="form__row-wrapper birthday-gender">
-      <div class="form__block date-of-birth">
+      <!-- Birth Date -->
+      <div class="form__block birthday">
         <label class="form__label" for="birthDate">{{ INPUTS_USER_META.birthDate.label }}</label>
         <div class="form__input-wrapper">
           <img
@@ -107,6 +112,7 @@
           {{ errorFields?.birthDate?.[0]?.message }}
         </div>
       </div>
+      <!-- Gender -->
       <div class="form__block gender">
         <label class="form__label" for="gender">{{ INPUTS_USER_META.gender.label }}</label>
         <div class="form__input-wrapper">
@@ -126,42 +132,25 @@
         </div>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <style lang="scss" scoped>
   @use '@/styles/elements.scss' as *;
   .form {
-    &.user-meta {
-    }
-    &__row-wrapper.phone-email {
-    }
+    flex-direction: column;
     &__row-wrapper.birthday-gender {
-      max-width: 40%;
-      .form__block {
-        flex: 1;
-      }
+      width: fit-content;
     }
   }
-  @media screen and (max-width: $breakpoint-xl) {
+  @media screen and (max-width: $breakpoint-sm) {
     .form {
-      flex-wrap: wrap;
-    }
-  }
-  @media screen and (max-width: $breakpoint-md) {
-    .form {
-      &__row-wrapper.phone-email {
+      &__row-wrapper {
         flex-wrap: wrap;
       }
-      &__row-wrapper.birthday-gender {
-        max-width: 100%;
-      }
-    }
-  }
-  @media screen and (max-width: 500px) {
-    .form {
-      &__row-wrapper.birthday-gender {
-        flex-wrap: wrap;
+      &__block.birthday,
+      &__block.gender {
+        width: fit-content;
       }
     }
   }

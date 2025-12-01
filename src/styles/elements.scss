@@ -3,10 +3,30 @@
 .form {
   width: 100%;
   display: flex;
-  gap: 1rem 1.5rem;
+  gap: 0.5rem 1rem;
   margin-bottom: 1rem;
+  position: relative;
   &:last-of-type {
     margin-bottom: 0;
+  }
+  &__indicator {
+    position: absolute;
+    $size: 0.5rem;
+    top: -$size;
+    right: -$size;
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    background-color: $warning-color;
+    &.form_ready {
+      background-color: $success-color;
+      transition: background-color 0.3s ease-in-out;
+    }
+  }
+  &__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
   }
   &__row-wrapper {
     width: 100%;
@@ -103,27 +123,27 @@
   gap: 0.5rem;
 }
 // Delete Button
-  .delete-btn {
-    $size: 26px;
-    background: $surface;
-    cursor: pointer;
-    padding: 0;
-    border: none;
-    color: $text-primary;
-    font-size: $font-size-sm;
-    line-height: $size;
-    width: $size;
-    height: $size;
-    border-radius: 50%;
-    text-align: center;
-    border: 1px solid $border-color;
-    transition: $transition;
-    &:hover {
-      box-shadow: $shadow-md;
-    }
+.delete-btn {
+  $size: 26px;
+  background: $surface;
+  cursor: pointer;
+  padding: 0;
+  border: none;
+  color: $text-primary;
+  font-size: $font-size-sm;
+  line-height: $size;
+  width: $size;
+  height: $size;
+  border-radius: 50%;
+  text-align: center;
+  border: 1px solid $border-color;
+  transition: $transition;
+  &:hover {
+    box-shadow: $shadow-md;
   }
+}
 
-  // Loading Spinner
+// Loading Spinner
 .loading {
   display: flex;
   flex-direction: column;
@@ -153,4 +173,94 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.card {
+  width: 100%;
+  max-width: 320px;
+  min-height: 200px;
+  border-radius: $radius-lg;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: $surface;
+  box-shadow: $shadow-lg;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  &:hover::before {
+    transform: translateX(100%);
+  }
+
+  &--visa {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  &--mastercard {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  }
+
+  &--unknown {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  }
+  &__title {
+    font-size: $font-size-md;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    margin-bottom: 0.85rem;
+  }
+  &__pay-system {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: $font-size-md;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.8;
+    width: 60px;
+    height: 40px;
+    object-fit: contain;
+  }
+  &__chip {
+    align-self: flex-end;
+    width: 50px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 0.5rem;
+  }
+  &__number {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    letter-spacing: 0.2rem;
+  }
+
+  &__holder {
+    font-size: $font-size-md;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+  }
+
+  &__expiry {
+    font-size: $font-size-md;
+    font-weight: 500;
+    align-self: flex-end;
+    letter-spacing: 0.2rem;
+  }
+
 }

@@ -5,6 +5,7 @@
   import FromUserName from '@/components/FormUserName.vue';
   import FormUserMeta from '@/components/FormUserMeta.vue';
   import FormUserAddress from '@/components/FormUserAddress.vue';
+  import FormUserBankCard from '@/components/FormUserBankCard.vue';
 
   interface Props {
     options?: Record<string, unknown>;
@@ -35,6 +36,7 @@
     <FromUserName />
     <FormUserMeta />
     <FormUserAddress />
+    <FormUserBankCard />
   </div>
 </template>
 

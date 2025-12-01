@@ -27,13 +27,15 @@
 </script>
 
 <template>
-  <!-- First and Second Name -->
-  <div class="form user-name">
+  <form class="form user-name">
+    <div class="form__indicator" :class="{ form_ready: pass }"></div>
     <div class="form__column-wrapper avatar">
       <AvatarUploader class="form__avatar-uploader" />
     </div>
-    <div class="form__column-wrapper">
-      <div class="form__row-wrapper name">
+    <!-- First, Middle and Second Name -->
+    <div class="form__column-wrapper names">
+      <div class="form__wrapper">
+        <!-- First name -->
         <div class="form__block name">
           <label class="form__label" for="name">{{ INPUTS_USER_NAME.name.label }}</label>
           <div class="form__input-wrapper">
@@ -48,7 +50,7 @@
           </div>
           <div class="form__error" v-if="errorFields?.name?.length && touched.name">{{ errorFields?.name?.[0]?.message }}</div>
         </div>
-
+        <!-- Middle name -->
         <div class="form__block middle-name">
           <label class="form__label" for="middle-name">{{ INPUTS_USER_NAME.middleName.label }}</label>
           <div class="form__input-wrapper no-icon">
@@ -70,6 +72,7 @@
           </div>
         </div>
       </div>
+      <!-- Second name -->
       <div class="form__block second-name">
         <label class="form__label" for="second-name">{{ INPUTS_USER_NAME.secondName.label }}</label>
         <div class="form__input-wrapper">
@@ -91,7 +94,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <style lang="scss" scoped>
@@ -101,13 +104,8 @@
       width: fit-content;
       flex-shrink: 0;
     }
-  }
-  @media screen and (max-width: $breakpoint-lg) {
-    // 1024px
-    .form {
-      &__row-wrapper.name {
-        flex-wrap: wrap;
-      }
+    &__wrapper {
+      flex-wrap: nowrap;
     }
   }
   @media screen and (max-width: $breakpoint-md) {
@@ -116,6 +114,14 @@
       flex-wrap: wrap;
       &__column-wrapper.avatar {
         width: 100%;
+      }
+    }
+  }
+  @media screen and (max-width: $breakpoint-sm) {
+    // 480px
+    .form {
+      &__wrapper {
+        flex-direction: column;
       }
     }
   }

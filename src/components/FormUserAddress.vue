@@ -27,93 +27,109 @@
 </script>
 
 <template>
-  <div class="form user-address">
-    <div class="form__row-wrapper country-zip-city">
-      <div class="form__block country">
-        <label class="form__label" for="country">{{ INPUTS_USER_ADDRESS.country.label }}</label>
-        <div class="form__input-wrapper">
-          <img
-            class="simple-icon"
-            v-if="INPUTS_USER_ADDRESS.country.icon"
-            :src="INPUTS_USER_ADDRESS.country.icon"
-            alt="Country icon" />
-          <input
-            :class="['form__input', { 'form__input--error': errorFields?.country?.length && touched.country }]"
-            id="country"
-            v-model.trim="user.country"
-            type="text"
-            :placeholder="INPUTS_USER_ADDRESS.country.placeholder"
-            @blur="markTouched('country')" />
-        </div>
-        <div class="form__error" v-if="errorFields?.country?.length && touched.country">
-          {{ errorFields?.country?.[0]?.message }}
-        </div>
+  <form class="form user-address">
+    <div class="form__indicator" :class="{ form_ready: pass }"></div>
+    <!-- Country -->
+    <div class="form__block country">
+      <label class="form__label" for="country">{{ INPUTS_USER_ADDRESS.country.label }}</label>
+      <div class="form__input-wrapper">
+        <img
+          class="simple-icon"
+          v-if="INPUTS_USER_ADDRESS.country.icon"
+          :src="INPUTS_USER_ADDRESS.country.icon"
+          alt="Country icon" />
+        <input
+          :class="['form__input', { 'form__input--error': errorFields?.country?.length && touched.country }]"
+          id="country"
+          v-model.trim="user.country"
+          type="text"
+          :placeholder="INPUTS_USER_ADDRESS.country.placeholder"
+          @blur="markTouched('country')" />
       </div>
-
-      <div class="form__block zip">
-        <label class="form__label" for="zip">{{ INPUTS_USER_ADDRESS.zip.label }}</label>
-        <div class="form__input-wrapper">
-          <img class="simple-icon" v-if="INPUTS_USER_ADDRESS.zip.icon" :src="INPUTS_USER_ADDRESS.zip.icon" alt="ZIP Code icon" />
-          <input
-            :class="['form__input', { 'form__input--error': errorFields?.zip?.length && touched.zip }]"
-            id="zip"
-            v-model.trim="user.zip"
-            type="text"
-            :placeholder="INPUTS_USER_ADDRESS.zip.placeholder"
-            @blur="markTouched('zip')" />
-        </div>
-        <div class="form__error" v-if="errorFields?.zip?.length && touched.zip">
-          {{ errorFields?.zip?.[0]?.message }}
-        </div>
-      </div>
-
-      <div class="form__block city">
-        <label class="form__label" for="city">{{ INPUTS_USER_ADDRESS.city.label }}</label>
-        <div class="form__input-wrapper">
-          <img class="simple-icon" v-if="INPUTS_USER_ADDRESS.city.icon" :src="INPUTS_USER_ADDRESS.city.icon" alt="City icon" />
-          <input
-            :class="['form__input', { 'form__input--error': errorFields?.city?.length && touched.city }]"
-            id="city"
-            v-model.trim="user.city"
-            type="text"
-            :placeholder="INPUTS_USER_ADDRESS.city.placeholder"
-            @blur="markTouched('city')" />
-        </div>
-        <div class="form__error" v-if="errorFields?.city?.length && touched.city">{{ errorFields?.city?.[0]?.message }}</div>
+      <div class="form__error" v-if="errorFields?.country?.length && touched.country">
+        {{ errorFields?.country?.[0]?.message }}
       </div>
     </div>
+    <!-- ZIP Code -->
+    <div class="form__block zip">
+      <label class="form__label" for="zip">{{ INPUTS_USER_ADDRESS.zip.label }}</label>
+      <div class="form__input-wrapper">
+        <img class="simple-icon" v-if="INPUTS_USER_ADDRESS.zip.icon" :src="INPUTS_USER_ADDRESS.zip.icon" alt="ZIP Code icon" />
+        <input
+          :class="['form__input', { 'form__input--error': errorFields?.zip?.length && touched.zip }]"
+          id="zip"
+          v-model.trim="user.zip"
+          type="text"
+          :placeholder="INPUTS_USER_ADDRESS.zip.placeholder"
+          @blur="markTouched('zip')" />
+      </div>
+      <div class="form__error" v-if="errorFields?.zip?.length && touched.zip">
+        {{ errorFields?.zip?.[0]?.message }}
+      </div>
+    </div>
+    <!-- City -->
+    <div class="form__block city">
+      <label class="form__label" for="city">{{ INPUTS_USER_ADDRESS.city.label }}</label>
+      <div class="form__input-wrapper">
+        <img class="simple-icon" v-if="INPUTS_USER_ADDRESS.city.icon" :src="INPUTS_USER_ADDRESS.city.icon" alt="City icon" />
+        <input
+          :class="['form__input', { 'form__input--error': errorFields?.city?.length && touched.city }]"
+          id="city"
+          v-model.trim="user.city"
+          type="text"
+          :placeholder="INPUTS_USER_ADDRESS.city.placeholder"
+          @blur="markTouched('city')" />
+      </div>
+      <div class="form__error" v-if="errorFields?.city?.length && touched.city">{{ errorFields?.city?.[0]?.message }}</div>
+    </div>
+
     <!-- Address -->
-    <div class="form__row-wrapper">
-      <div class="form__block address">
-        <label class="form__label" for="address">{{ INPUTS_USER_ADDRESS.address.label }}</label>
-        <div class="form__input-wrapper">
-          <img class="simple-icon" :src="INPUTS_USER_ADDRESS.address.icon" alt="Address icon" />
-          <input
-            :class="['form__input', { 'form__input--error': errorFields?.address?.length && touched.address }]"
-            id="address"
-            v-model.trim="user.address"
-            type="text"
-            :placeholder="INPUTS_USER_ADDRESS.address.placeholder"
-            @blur="markTouched('address')" />
-        </div>
-        <div class="form__error" v-if="errorFields?.address?.length && touched.address">
-          {{ errorFields?.address?.[0]?.message }}
-        </div>
+    <div class="form__block address">
+      <label class="form__label" for="address">{{ INPUTS_USER_ADDRESS.address.label }}</label>
+      <div class="form__input-wrapper">
+        <img class="simple-icon" :src="INPUTS_USER_ADDRESS.address.icon" alt="Address icon" />
+        <input
+          :class="['form__input', { 'form__input--error': errorFields?.address?.length && touched.address }]"
+          id="address"
+          v-model.trim="user.address"
+          type="text"
+          :placeholder="INPUTS_USER_ADDRESS.address.placeholder"
+          @blur="markTouched('address')" />
+      </div>
+      <div class="form__error" v-if="errorFields?.address?.length && touched.address">
+        {{ errorFields?.address?.[0]?.message }}
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <style lang="scss" scoped>
   @use '@/styles/elements.scss' as *;
   .form {
     flex-wrap: wrap;
+    &__block:not(.address) {
+      width: calc(100% / 3 - 0.75rem);
+    }
+    &__block.address {
+      width: 100%;
+    }
   }
   @media screen and (max-width: $breakpoint-md) {
     // 768px
     .form {
-      &__row-wrapper.country-zip-city {
-        flex-direction: column;
+      &__block:not(.city, .address) {
+        width: calc(100% / 2 - 0.75rem);
+      }
+      &__block.city {
+        width: 100%;
+      }
+    }
+  }
+  @media screen and (max-width: $breakpoint-sm) {
+    // 480px
+    .form {
+      &__block {
+        width: 100% !important;
       }
     }
   }

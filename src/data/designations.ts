@@ -22,6 +22,9 @@ export const ACCOUNT_PAGE_HEADER: AccPageHeader = {
 
 // Form input validation params User Name
 type GenderOptions = 'Not selected' | 'Male' | 'Female' | 'Other';
+// Bank Card Type
+type paymentSystem = 'visa' | 'mastercard' | 'unknown';
+
 interface FieldInput {
   icon?: string;
   label?: string;
@@ -29,6 +32,7 @@ interface FieldInput {
   options?: GenderOptions[];
   minimum?: number;
   maximum?: number;
+  paymentSystem?: { [key in paymentSystem]: string | undefined };
 }
 interface InputsUserName {
   name: FieldInput;
@@ -111,5 +115,47 @@ export const INPUTS_USER_ADDRESS: InputsUserAddress = {
     icon: iconsMap['home-map-marker.svg'],
     label: 'Address *',
     placeholder: 'Address'
+  }
+};
+interface InputsBankCard {
+  cardNumber: FieldInput;
+  cardHolder: FieldInput;
+  expiry: FieldInput;
+  cvv: FieldInput;
+  type: FieldInput;
+}
+export const INPUTS_BANK_CARD_META: InputsBankCard = {
+  cardNumber: {
+    label: 'Card Number',
+    placeholder: '0000 0000 0000 0000',
+    icon: iconsMap['credit-card.svg'],
+
+  },
+  cardHolder: {
+    label: 'Card Holder',
+    placeholder: 'Holder Name',
+    icon: iconsMap['account.svg']
+  },
+  expiry: {
+    label: 'Expiry Date',
+    placeholder: 'MM/YY',
+    icon: iconsMap['calendar-clock.svg'],
+    maximum: 5
+  },
+  cvv: {
+    label: 'CVV',
+    placeholder: '***',
+    icon: iconsMap['lock.svg'],
+    maximum: 4
+  },
+  type: {
+    label: 'Card Type',
+    placeholder: 'Card Type',
+    icon: iconsMap['card-dotted.svg'],
+    paymentSystem: {
+      visa: iconsMap['visa.svg'],
+      mastercard: iconsMap['mastercard.svg'],
+      unknown: ''
+    }
   }
 };
