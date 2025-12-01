@@ -1,16 +1,8 @@
-<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
-  import { computed, ref, reactive, watch } from 'vue';
+  import { computed, reactive } from 'vue';
   import type { Rules } from 'async-validator';
   import { INPUTS_USER_META } from '@/data/designations.ts';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
-
-  interface Props {
-    options?: Record<string, unknown>;
-  }
-  const props = withDefaults(defineProps<Props>(), {
-    options: () => ({})
-  });
 
   const user = reactive({ phone: '', email: '', birthDate: '', gender: INPUTS_USER_META.gender.options?.[0] ?? '' });
   const touched = reactive({
@@ -38,20 +30,12 @@
     ]
   };
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
-  watch(isFinished, (val) => {
-    console.log('isFinished value', val);
-    // Trigger validation on user data change
-  });
-  const defaultOptions: Record<string, unknown> = {};
-  const mainOptions = computed(() => ({
-    ...props.options,
-    ...defaultOptions
-  }));
+  const isValidForm = computed(() => pass.value && isFinished.value);
 </script>
 
 <template>
   <form class="form user-meta">
-    <div class="form__indicator" :class="{ form_ready: pass }"></div>
+    <div class="form__indicator" :class="{ form_ready: isValidForm }"></div>
     <!-- Email and Phone -->
     <div class="form__row-wrapper phone-email">
       <!-- Phone -->

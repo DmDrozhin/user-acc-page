@@ -23,12 +23,12 @@
     address: [{ type: 'string', min: 3, max: 100, required: true, message: 'Address is required' }]
   };
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
-  const isValidForm = computed(() => pass && isFinished);
+  const isValidForm = computed(() => pass.value && isFinished.value);
 </script>
 
 <template>
   <form class="form user-address">
-    <div class="form__indicator" :class="{ form_ready: pass }"></div>
+    <div class="form__indicator" :class="{ form_ready: isValidForm }"></div>
     <!-- Country -->
     <div class="form__block country">
       <label class="form__label" for="country">{{ INPUTS_USER_ADDRESS.country.label }}</label>

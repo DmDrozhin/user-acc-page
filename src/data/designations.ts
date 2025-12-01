@@ -23,7 +23,7 @@ export const ACCOUNT_PAGE_HEADER: AccPageHeader = {
 // Form input validation params User Name
 type GenderOptions = 'Not selected' | 'Male' | 'Female' | 'Other';
 // Bank Card Type
-type paymentSystem = 'visa' | 'mastercard' | 'unknown';
+type paymentSystem = 'visa' | 'mastercard' | 'amex' | 'discover' | 'mir' | 'unionpay' |'unknown';
 
 interface FieldInput {
   icon?: string;
@@ -155,6 +155,10 @@ export const INPUTS_BANK_CARD_META: InputsBankCard = {
     paymentSystem: {
       visa: iconsMap['visa.svg'],
       mastercard: iconsMap['mastercard.svg'],
+      amex: iconsMap['american_express.svg'],
+      discover: iconsMap['discover_card.svg'],
+      mir: iconsMap['mir.svg'],
+      unionpay: iconsMap['unionPay.svg'],
       unknown: ''
     }
   }

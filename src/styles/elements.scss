@@ -205,15 +205,24 @@
   &:hover::before {
     transform: translateX(100%);
   }
-
   &--visa {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
-
   &--mastercard {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   }
-
+  &--amex {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  }
+  &--mir {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+  }
+  &--discover {
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  }
+  &--unionpay {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+  }
   &--unknown {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   }
@@ -232,7 +241,7 @@
     font-weight: 600;
     text-transform: uppercase;
     opacity: 0.8;
-    width: 60px;
+    width: 80px;
     height: 40px;
     object-fit: contain;
   }
@@ -247,6 +256,7 @@
     font-size: $font-size-lg;
     font-weight: 600;
     letter-spacing: 0.2rem;
+    text-shadow: $text-primary 1px 1px 2px;
   }
 
   &__holder {
@@ -262,5 +272,4 @@
     align-self: flex-end;
     letter-spacing: 0.2rem;
   }
-
 }

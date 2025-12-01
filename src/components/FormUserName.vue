@@ -1,4 +1,3 @@
-<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
   import { computed, reactive } from 'vue';
   import type { Rules } from 'async-validator';
@@ -23,12 +22,12 @@
   };
 
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
-  const isValidForm = computed(() => pass && isFinished);
+  const isValidForm = computed(() => pass.value && isFinished.value);
 </script>
 
 <template>
   <form class="form user-name">
-    <div class="form__indicator" :class="{ form_ready: pass }"></div>
+    <div class="form__indicator" :class="{ form_ready: isValidForm }"></div>
     <div class="form__column-wrapper avatar">
       <AvatarUploader class="form__avatar-uploader" />
     </div>
