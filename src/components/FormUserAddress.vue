@@ -1,16 +1,15 @@
-<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
-  import { computed, reactive, watch, watchEffect } from 'vue';
+  import { computed, reactive, watch } from 'vue';
   import type { Rules } from 'async-validator';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
   import { INPUTS_USER_ADDRESS } from '@/data/designations.ts';
 
   interface Props {
-    options?: Record<string, unknown>;
+    options?: UserAddress | null;
     resetKey: number;
   }
   const props = withDefaults(defineProps<Props>(), {
-    options: () => ({}),
+    options: null,
     resetKey: 0
   });
 
@@ -19,7 +18,13 @@
     (e: 'update:user', value: typeof user): void;
   }>();
 
-  const user = reactive({ country: '', state: '', zip: '', city: '', street: '' });
+  const user = reactive({
+    country: '',
+    state: '',
+    zip: '',
+    city: '',
+    street: ''
+  });
   const touched = reactive({
     country: false,
     state: false,
@@ -40,9 +45,7 @@
   };
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
   const isValidForm = computed(() => pass.value && isFinished.value);
-  watchEffect(() => {
-    emit('update:isValid', isValidForm.value);
-  });
+  watch(isValidForm, (v) => emit('update:isValid', v), { immediate: true });
 
   const resetForms = () => {
     // Reset user data
@@ -53,29 +56,30 @@
       touched[key as keyof typeof touched] = false;
     });
   };
-  watch(
-    user,
-    (val) => {
-      emit('update:user', { ...val });
-    },
-    { deep: true }
-  );
+  // Reset form when resetKey changes
   watch(
     () => props.resetKey,
     () => resetForms()
   );
+  // Set initial values from options prop
   const setInitialValues = () => {
-    if (props.options) {
-      const copy = Object.assign({}, props.options);
-      user.country = (copy.country as string) || '';
-      user.state = (copy.state as string) || '';
-      user.zip = (copy.zip as string) || '';
-      user.city = (copy.city as string) || '';
-      user.street = (copy.street as string) || '';
-    }
+    if (!props.options) return;
+    user.country = props.options.country || '';
+    user.state = props.options.state || '';
+    user.zip = props.options.zip || '';
+    user.city = props.options.city || '';
+    user.street = props.options.street || '';
   };
   // Set initial values on mount
   setInitialValues();
+  // Update values when options prop changes
+  watch(
+    () => props.options,
+    () => setInitialValues(),
+    { deep: true }
+  );
+  // Emit user data on changes
+  watch(user, (val) => emit('update:user', { ...val }), { deep: true });
 </script>
 
 <template>

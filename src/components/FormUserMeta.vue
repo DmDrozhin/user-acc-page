@@ -1,15 +1,15 @@
 <script setup lang="ts">
-  import { computed, reactive, watch, watchEffect } from 'vue';
+  import { computed, reactive, watch } from 'vue';
   import type { Rules } from 'async-validator';
   import { INPUTS_USER_META } from '@/data/designations.ts';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
 
   interface Props {
-    options?: Record<string, unknown>;
-    resetKey: number;
+    options?: UserMeta | null;
+    resetKey: number; // To reset the form
   }
   const props = withDefaults(defineProps<Props>(), {
-    options: () => ({}),
+    options: null,
     resetKey: 0
   });
 
@@ -17,7 +17,13 @@
     (e: 'update:isValid', value: boolean): void;
     (e: 'update:user', value: typeof user): void;
   }>();
-  const user = reactive({ phone: '', email: '', birthDate: '', gender: INPUTS_USER_META.gender.options?.[0] ?? '' });
+
+  const user = reactive({
+    phone: '',
+    email: '',
+    birthDate: '',
+    gender: ''
+  });
   const touched = reactive({
     phone: false,
     email: false,
@@ -27,6 +33,7 @@
   const markTouched = (field: keyof typeof touched) => {
     touched[field] = true;
   };
+
   const rules: Rules = {
     phone: [
       { required: true, message: 'Phone number is required' },
@@ -43,9 +50,7 @@
   };
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
   const isValidForm = computed(() => pass.value && isFinished.value);
-  watchEffect(() => {
-    emit('update:isValid', isValidForm.value);
-  });
+  watch(isValidForm, (v) => emit('update:isValid', v), { immediate: true });
 
   const resetForms = () => {
     // Reset user meta data
@@ -56,29 +61,29 @@
       touched[key as keyof typeof touched] = false;
     });
   };
-
-  watch(
-    user,
-    (val) => {
-      emit('update:user', { ...val });
-    },
-    { deep: true }
-  );
+  // Reset form when resetKey changes
   watch(
     () => props.resetKey,
     () => resetForms()
   );
+  // Set initial values from props.options
   const setInitialValues = () => {
-    if (props.options) {
-      const copy = Object.assign({}, props.options);
-      user.phone = (copy.phone as string) || '';
-      user.email = (copy.email as string) || '';
-      user.birthDate = (copy.birthDate as string) || '';
-      user.gender = (copy.gender as string) || '';
-    }
+    if (!props.options) return;
+    user.phone = props.options.phone || '';
+    user.email = props.options.email || '';
+    user.birthDate = props.options.birthDate || '';
+    user.gender = props.options.gender || '';
   };
   // Set initial values on mount
   setInitialValues();
+  // Update values when options prop changes
+  watch(
+    () => props.options,
+    () => setInitialValues(),
+    { deep: true }
+  );
+  // Emit user data on changes
+  watch(user, (val) => emit('update:user', { ...val }), { deep: true });
 </script>
 
 <template>

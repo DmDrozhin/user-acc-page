@@ -1,6 +1,6 @@
 <!-- src/components/FormUserBankCard.vue -->
 <script setup lang="ts">
-  import { reactive, computed, watch, watchEffect } from 'vue';
+  import { reactive, computed, watch } from 'vue';
   import type { Rules } from 'async-validator';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
   import { INPUTS_BANK_CARD_META } from '@/data/designations';
@@ -9,11 +9,11 @@
   import cardValidator from 'card-validator';
 
   interface Props {
-    options?: Record<string, unknown>;
+    options?: UserCard | null;
     resetKey: number;
   }
   const props = withDefaults(defineProps<Props>(), {
-    options: () => ({}),
+    options: null,
     resetKey: 0
   });
 
@@ -24,15 +24,14 @@
 
   const card = reactive({
     cardNumber: '',
-    cardHolder: '',
+    holderName: '',
     expiry: '',
     cvv: '',
-    paySystem: '' as string
+    paySystem: ''
   });
-
   const touched = reactive({
     cardNumber: false,
-    cardHolder: false,
+    holderName: false,
     expiry: false,
     cvv: false
   });
@@ -61,8 +60,8 @@
   // Detect card type using card-validator
   watch(
     () => card.cardNumber,
-    (v) => {
-      const numberValidation = cardValidator.number(v);
+    (val) => {
+      const numberValidation = cardValidator.number(val);
       if (numberValidation.card) {
         card.paySystem = numberValidation.card.type; // 'visa', 'mastercard', 'amex', etc.
       } else {
@@ -111,9 +110,7 @@
 
   const { pass, isFinished, errorFields } = useAsyncValidator(card, rules);
   const isValidForm = computed(() => pass.value && isFinished.value);
-  watchEffect(() => {
-    emit('update:isValid', isValidForm.value);
-  });
+  watch(isValidForm, (v) => emit('update:isValid', v), { immediate: true });
 
   const resetForms = () => {
     // Reset card data
@@ -124,28 +121,31 @@
       touched[key as keyof typeof touched] = false;
     });
   };
-  watch(
-    card,
-    (val) => {
-      emit('update:card', { ...val });
-    },
-    { deep: true }
-  );
+  // Reset form when resetKey changes
   watch(
     () => props.resetKey,
     () => resetForms()
   );
+
+  // Set initial values from options prop
   const setInitialValues = () => {
-    if (props.options) {
-      const copy = Object.assign({}, props.options);
-      card.cardNumber = (copy.cardNumber as string) || '';
-      card.cardHolder = (copy.holderName as string) || '';
-      card.expiry = (copy.expiry as string) || '';
-      card.cvv = (copy.cvv as string) || '';
-    }
+    if (!props.options) return;
+    card.cardNumber = props.options.cardNumber || '';
+    card.holderName = props.options.holderName || '';
+    card.expiry = props.options.expiry || '';
+    card.cvv = props.options.cvv ? String(props.options.cvv) : '';
+    card.paySystem = props.options.paySystem || '';
   };
   // Set initial values on mount
   setInitialValues();
+  // Update values when options prop changes
+  watch(
+    () => props.options,
+    () => setInitialValues(),
+    { deep: true }
+  );
+  // Emit card data on changes
+  watch(card, (val) => emit('update:card', { ...val }), { deep: true });
 </script>
 
 <template>
@@ -160,7 +160,7 @@
         <div class="card__number">{{ formatCardNumber(card.cardNumber, cardMask) || '**** **** **** ****' }}</div>
         <img class="card__chip" :src="getImagePath('card-chip.png')" alt="bank card chip" />
         <div class="card__expiry">{{ card.expiry || 'MM/YY' }}</div>
-        <div class="card__holder">{{ card.cardHolder || 'HOLDER NAME' }}</div>
+        <div class="card__holder">{{ card.holderName || 'HOLDER NAME' }}</div>
       </div>
     </div>
 
@@ -198,16 +198,16 @@
             :src="INPUTS_BANK_CARD_META.cardHolder.icon"
             alt="Account icon" />
           <input
-            id="cardHolder"
-            v-model.trim="card.cardHolder"
+            id="holderName"
+            v-model.trim="card.holderName"
             type="text"
             autocomplete="cc-name"
             :placeholder="INPUTS_BANK_CARD_META.cardHolder.placeholder"
-            :class="['form__input', { 'form__input--error': errorFields?.cardHolder?.length && touched.cardHolder }]"
-            @blur="markTouched('cardHolder')" />
+            :class="['form__input', { 'form__input--error': errorFields?.holderName?.length && touched.holderName }]"
+            @blur="markTouched('holderName')" />
         </div>
-        <div class="form__error" v-if="errorFields?.cardHolder?.length && touched.cardHolder">
-          {{ errorFields.cardHolder[0]?.message }}
+        <div class="form__error" v-if="errorFields?.holderName?.length && touched.holderName">
+          {{ errorFields.holderName[0]?.message }}
         </div>
       </div>
 

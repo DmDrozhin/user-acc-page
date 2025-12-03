@@ -7,12 +7,12 @@
   import UserProfile from './components/UserProfile.vue';
 
   const incomingProfile = ref<Profile | null>(null);
-  const incomingCard = ref<userCard | null>(null);
+  const incomingCard = ref<UserCard | null>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const outgoingProfile = ref<Profile | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const outgoingCard = ref<userCard | null>(null);
+  const outgoingCard = ref<UserCard | null>(null);
 
   const isLoading = reactive<Record<string, boolean>>({
     userProfile: false,
@@ -25,7 +25,7 @@
   };
   const saveCardData = () => {
     if (mockCard) {
-      incomingCard.value = mockCard as userCard;
+      incomingCard.value = mockCard as UserCard;
     }
   };
   onMounted(() => {

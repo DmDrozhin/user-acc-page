@@ -5,7 +5,7 @@ interface UserName {
   middleName: string;
   lastName: string;
   avatarUrl?: string;
-  avatar?: Blob | null | string;
+  avatar?: null | string;
 }
 interface UserMeta {
   email: string;
@@ -20,7 +20,7 @@ interface UserAddress {
   zip: string;
   city: string;
 }
-interface userCard {
+interface UserCard {
   uuid: string;
   cardNumber: string;
   holderName: string;

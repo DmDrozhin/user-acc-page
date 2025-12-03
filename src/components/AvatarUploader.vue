@@ -1,6 +1,17 @@
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import AvatarCropperModal from '@/components/AvatarCropperModal.vue';
+
+  interface Props {
+    options?: Record<string, unknown> | null;
+    resetKey: number; // To reset the form
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    options: null,
+    resetKey: 0
+  });
+
+  const emit = defineEmits(['update:avatar']);
 
   const avatar = ref<string | null>(null);
   const fileInput = ref<HTMLInputElement | null>(null);
@@ -8,12 +19,12 @@
   const isDragOver = ref(false);
   const selectedFile = ref<File | null>(null);
 
-  // ---- Ошибки ----
+  // Errors and Toast
   const errorMessage = ref<string>('');
   const toastMessage = ref<string>('');
   let toastTimer: number | null = null;
 
-  // ---- Файл-валидация ----
+  // File Validation
   const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg', 'image/svg+xml'];
   const MAX_SIZE_MB = 2;
   const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
@@ -28,6 +39,7 @@
     infoFileFormat: string;
     infoFileSize: string;
   }
+  // Upload messages in different languages
   const UPLOAD_MESSAGES: Record<Lang, UploadMessage> = {
     uk: {
       invalidType: `Недопустимий формат. Дозволено: JPG, PNG, WEBP, SVG.`,
@@ -51,102 +63,106 @@
       infoFileSize: 'Максимальный размер:'
     }
   };
-
+  // Show error message and toast
   function showError(msg: string) {
     errorMessage.value = msg;
     showToast(msg);
   }
-
+  // Show toast message
   function showToast(msg: string) {
     toastMessage.value = msg;
-
     if (toastTimer) {
       clearTimeout(toastTimer);
     }
-
     toastTimer = window.setTimeout(() => {
       toastMessage.value = '';
     }, 3000);
   }
-
+  // Clear error message
   function clearError() {
     errorMessage.value = '';
   }
 
+  // Validate file
   function validateFile(file: File): boolean {
     clearError();
-
     if (!ALLOWED_TYPES.includes(file.type)) {
       showError(UPLOAD_MESSAGES[currentLang]?.invalidType || UPLOAD_MESSAGES['en'].invalidType);
       return false;
     }
-
     if (file.size > MAX_SIZE_BYTES) {
       showError(UPLOAD_MESSAGES[currentLang]?.tooLarge || UPLOAD_MESSAGES['en'].tooLarge);
       return false;
     }
-
     return true;
   }
-
-  // ---- Файловый диалог ----
+  // Click to open file dialog
   function openFileDialog() {
     if (!avatar.value) {
       fileInput.value?.click();
     }
   }
-
-  // Выбор через input
+  // Handle file input change
   function onFileChange(e: Event) {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
-
     if (!file) return;
-
     if (!validateFile(file)) {
       input.value = '';
       return;
     }
-
     selectedFile.value = file;
   }
-
-  // ---- Drag-and-drop ----
+  // Drag and Drop handlers
   function onDragOver(e: DragEvent) {
     if (avatar.value) return;
     e.preventDefault();
     isDragOver.value = true;
   }
-
+  // Handle drag leave
   function onDragLeave() {
     isDragOver.value = false;
   }
-
+  // Handle file drop
   function onDrop(e: DragEvent) {
     if (avatar.value) return;
     e.preventDefault();
     isDragOver.value = false;
-
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
-
     if (!validateFile(file)) return;
-
     selectedFile.value = file;
   }
 
-  // ---- Приём результата из модалки ----
+  // Handle crop complete
   function onCropComplete(result: string) {
     avatar.value = result;
     selectedFile.value = null;
     clearError();
+    emit('update:avatar', result);
   }
 
-  // ---- Удаление аватара ----
+  // Handle avatar removal
   function removeAvatar(e: Event) {
     e.stopPropagation();
     avatar.value = null;
   }
+  const setInitialAvatar = () => {
+    if (props.options && typeof props.options.avatar === 'string') {
+      avatar.value = props.options.avatar;
+    } else {
+      avatar.value = null;
+    }
+  };
+  // Set initial avatar on mount and when resetKey changes
+  setInitialAvatar();
+  watch(
+    () => props.resetKey,
+    () => {
+      setInitialAvatar();
+      clearError();
+    }
+  );
 </script>
 
 <template>

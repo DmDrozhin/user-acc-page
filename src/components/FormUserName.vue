@@ -1,16 +1,16 @@
 <script setup lang="ts">
-  import { computed, reactive, watch, watchEffect } from 'vue';
+  import { computed, reactive, watch } from 'vue';
   import type { Rules } from 'async-validator';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
   import { INPUTS_USER_NAME } from '@/data/designations.ts';
   import AvatarUploader from '@/components/AvatarUploader.vue';
 
   interface Props {
-    options?: Record<string, unknown>;
-    resetKey: number;
+    options?: UserName | null;
+    resetKey: number; // To reset the form
   }
   const props = withDefaults(defineProps<Props>(), {
-    options: () => ({}),
+    options: null,
     resetKey: 0
   });
 
@@ -18,7 +18,14 @@
     (e: 'update:isValid', value: boolean): void;
     (e: 'update:user', value: typeof user): void;
   }>();
-  const user = reactive({ firstName: '', middleName: '', lastName: '', avatar: '', avatarUrl: '' });
+
+  const user = reactive({
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    avatar: '',
+    avatarUrl: ''
+  });
   const touched = reactive({
     firstName: false,
     middleName: false,
@@ -42,9 +49,7 @@
   };
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
   const isValidForm = computed(() => pass.value && isFinished.value);
-  watchEffect(() => {
-    emit('update:isValid', isValidForm.value);
-  });
+  watch(isValidForm, (v) => emit('update:isValid', v), { immediate: true });
 
   const resetForms = () => {
     // Reset user data
@@ -55,29 +60,30 @@
       touched[key as keyof typeof touched] = false;
     });
   };
-  watch(
-    user,
-    (val) => {
-      emit('update:user', { ...val });
-    },
-    { deep: true }
-  );
   // Reset form when resetKey changes
   watch(
     () => props.resetKey,
     () => resetForms()
   );
+  // Set initial values from options prop
   const setInitialValues = () => {
-    if (props.options) {
-      const copy = Object.assign({}, props.options);
-      user.firstName = (copy.firstName as string) || '';
-      user.middleName = (copy.middleName as string) || '';
-      user.lastName = (copy.lastName as string) || '';
-      user.avatar = (copy.avatar as string) || '';
-    }
+    if (!props.options) return;
+    user.firstName = props.options.firstName || '';
+    user.middleName = props.options.middleName || '';
+    user.lastName = props.options.lastName || '';
+    user.avatar = props.options.avatar || '';
+    user.avatarUrl = props.options.avatarUrl || '';
   };
   // Set initial values on mount
   setInitialValues();
+  // Update values when options prop changes
+  watch(
+    () => props.options,
+    () => setInitialValues(),
+    { deep: true }
+  );
+  // Emit user data on changes
+  watch(user, (val) => emit('update:user', { ...val }), { deep: true });
 </script>
 
 <template>
