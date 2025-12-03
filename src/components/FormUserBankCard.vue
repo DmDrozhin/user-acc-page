@@ -1,12 +1,26 @@
 <!-- src/components/FormUserBankCard.vue -->
 <script setup lang="ts">
-  import { reactive, computed, watch } from 'vue';
+  import { reactive, computed, watch, watchEffect } from 'vue';
   import type { Rules } from 'async-validator';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
   import { INPUTS_BANK_CARD_META } from '@/data/designations';
-  import { getImagePath } from '@/utils/utils';
+  import { getImagePath, formatCardNumber } from '@/utils/utils';
   import MaskedInput from '@/components/MaskedInput.vue';
   import cardValidator from 'card-validator';
+
+  interface Props {
+    options?: Record<string, unknown>;
+    resetKey: number;
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    options: () => ({}),
+    resetKey: 0
+  });
+
+  const emit = defineEmits<{
+    (e: 'update:isValid', value: boolean): void;
+    (e: 'update:card', value: typeof card): void;
+  }>();
 
   const card = reactive({
     cardNumber: '',
@@ -97,6 +111,41 @@
 
   const { pass, isFinished, errorFields } = useAsyncValidator(card, rules);
   const isValidForm = computed(() => pass.value && isFinished.value);
+  watchEffect(() => {
+    emit('update:isValid', isValidForm.value);
+  });
+
+  const resetForms = () => {
+    // Reset card data
+    Object.keys(card).forEach((key) => {
+      card[key as keyof typeof card] = '';
+    });
+    Object.keys(touched).forEach((key) => {
+      touched[key as keyof typeof touched] = false;
+    });
+  };
+  watch(
+    card,
+    (val) => {
+      emit('update:card', { ...val });
+    },
+    { deep: true }
+  );
+  watch(
+    () => props.resetKey,
+    () => resetForms()
+  );
+  const setInitialValues = () => {
+    if (props.options) {
+      const copy = Object.assign({}, props.options);
+      card.cardNumber = (copy.cardNumber as string) || '';
+      card.cardHolder = (copy.holderName as string) || '';
+      card.expiry = (copy.expiry as string) || '';
+      card.cvv = (copy.cvv as string) || '';
+    }
+  };
+  // Set initial values on mount
+  setInitialValues();
 </script>
 
 <template>
@@ -108,7 +157,7 @@
       <div class="card" :class="'card--' + card.paySystem">
         <div class="card__title">BANK CARD</div>
         <img class="card__pay-system" v-if="paySystemLogo" :src="paySystemLogo || ''" alt="payment system" />
-        <div class="card__number">{{ card.cardNumber || '**** **** **** ****' }}</div>
+        <div class="card__number">{{ formatCardNumber(card.cardNumber, cardMask) || '**** **** **** ****' }}</div>
         <img class="card__chip" :src="getImagePath('card-chip.png')" alt="bank card chip" />
         <div class="card__expiry">{{ card.expiry || 'MM/YY' }}</div>
         <div class="card__holder">{{ card.cardHolder || 'HOLDER NAME' }}</div>
@@ -256,10 +305,7 @@
     &::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
       transform: translateX(-100%);
       transition: transform 0.6s;

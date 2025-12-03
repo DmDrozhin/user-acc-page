@@ -16,8 +16,8 @@ export const ACCOUNT_PAGE_HEADER: AccPageHeader = {
   title: 'User Account Page',
   subtitle: 'Manage Your Account Settings',
   description: 'A page to manage user account settings and information.',
-  iconStatic: iconsMap['account-lock-open.svg'],
-  iconEdit: iconsMap['account-lock.svg']
+  iconStatic: iconsMap['account-file-text.svg'],
+  iconEdit: iconsMap['account-edit.svg']
 };
 
 // Form input validation params User Name
@@ -35,36 +35,38 @@ interface FieldInput {
   paymentSystem?: { [key in paymentSystem]: string | undefined };
 }
 interface InputsUserName {
-  name: FieldInput;
+  firstName: FieldInput;
   middleName: FieldInput;
-  secondName: FieldInput;
+  lastName: FieldInput;
+  avatarUrl?: string;
+  avatar?: Blob | null | string;
 }
 export const INPUTS_USER_NAME: InputsUserName = {
-  name: {
+  firstName: {
     icon: iconsMap['account.svg'],
-    label: 'Name *',
-    placeholder: 'Name'
+    label: 'First Name *',
+    placeholder: 'First Name'
   },
   middleName: {
     icon: '',
     label: 'Middle Name',
     placeholder: 'Middle Name'
   },
-  secondName: {
+  lastName: {
     icon: iconsMap['account-plus.svg'],
-    label: 'Second Name *',
-    placeholder: 'Second Name'
+    label: 'Last Name *',
+    placeholder: 'Last Name'
   }
 };
 
 // Form input validation params User Avatar
-interface InputsUserAvatar {
+interface InputsUserMeta {
   email: FieldInput;
   phone: FieldInput;
   birthDate: FieldInput;
   gender: FieldInput;
 }
-export const INPUTS_USER_META: InputsUserAvatar = {
+export const INPUTS_USER_META: InputsUserMeta = {
   email: {
     icon: iconsMap['mail.svg'],
     label: 'Email',
@@ -91,11 +93,22 @@ export const INPUTS_USER_META: InputsUserAvatar = {
 // Form input validation params User Address
 interface InputsUserAddress {
   country: FieldInput;
+  state: FieldInput;
   zip: FieldInput;
   city: FieldInput;
-  address: FieldInput;
+  street: FieldInput;
 }
 export const INPUTS_USER_ADDRESS: InputsUserAddress = {
+  street: {
+    icon: iconsMap['home-map-marker.svg'],
+    label: 'Street *',
+    placeholder: 'Street'
+  },
+  state: {
+    icon: iconsMap['map-marker.svg'],
+    label: 'State/Province',
+    placeholder: 'State/Province'
+  },
   country: {
     icon: iconsMap['earth.svg'],
     label: 'Country *',
@@ -111,11 +124,6 @@ export const INPUTS_USER_ADDRESS: InputsUserAddress = {
     label: 'City *',
     placeholder: 'City'
   },
-  address: {
-    icon: iconsMap['home-map-marker.svg'],
-    label: 'Address *',
-    placeholder: 'Address'
-  }
 };
 interface InputsBankCard {
   cardNumber: FieldInput;

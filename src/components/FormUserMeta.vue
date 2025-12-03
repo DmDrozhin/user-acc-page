@@ -1,9 +1,22 @@
 <script setup lang="ts">
-  import { computed, reactive } from 'vue';
+  import { computed, reactive, watch, watchEffect } from 'vue';
   import type { Rules } from 'async-validator';
   import { INPUTS_USER_META } from '@/data/designations.ts';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
 
+  interface Props {
+    options?: Record<string, unknown>;
+    resetKey: number;
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    options: () => ({}),
+    resetKey: 0
+  });
+
+  const emit = defineEmits<{
+    (e: 'update:isValid', value: boolean): void;
+    (e: 'update:user', value: typeof user): void;
+  }>();
   const user = reactive({ phone: '', email: '', birthDate: '', gender: INPUTS_USER_META.gender.options?.[0] ?? '' });
   const touched = reactive({
     phone: false,
@@ -30,6 +43,42 @@
   };
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
   const isValidForm = computed(() => pass.value && isFinished.value);
+  watchEffect(() => {
+    emit('update:isValid', isValidForm.value);
+  });
+
+  const resetForms = () => {
+    // Reset user meta data
+    Object.keys(user).forEach((key) => {
+      user[key as keyof typeof user] = '';
+    });
+    Object.keys(touched).forEach((key) => {
+      touched[key as keyof typeof touched] = false;
+    });
+  };
+
+  watch(
+    user,
+    (val) => {
+      emit('update:user', { ...val });
+    },
+    { deep: true }
+  );
+  watch(
+    () => props.resetKey,
+    () => resetForms()
+  );
+  const setInitialValues = () => {
+    if (props.options) {
+      const copy = Object.assign({}, props.options);
+      user.phone = (copy.phone as string) || '';
+      user.email = (copy.email as string) || '';
+      user.birthDate = (copy.birthDate as string) || '';
+      user.gender = (copy.gender as string) || '';
+    }
+  };
+  // Set initial values on mount
+  setInitialValues();
 </script>
 
 <template>

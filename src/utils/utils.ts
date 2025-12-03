@@ -39,3 +39,17 @@ export function formatPhone(num: string): string {
   }
   return num; // fallback
 }
+/** Format card number by mask (mask using '#' as digit placeholders). Returns masked string trimmed. */
+export function formatCardNumber(num: string, mask: string): string {
+  const digits = num.replace(/\D/g, '').split('');
+  let out = '';
+  for (const ch of mask) {
+    if (ch === '#') {
+      if (digits.length === 0) break;
+      out += digits.shift();
+    } else {
+      out += ch;
+    }
+  }
+  return out.trim();
+}

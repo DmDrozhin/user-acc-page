@@ -43,7 +43,7 @@
   &__block {
     width: 100%;
     min-height: 92px;
-    outline: 1px solid rgb(241, 239, 239); // temp
+    // outline: 1px solid rgb(241, 239, 239); // temp
   }
   &__input-wrapper {
     display: flex;
@@ -143,35 +143,4 @@
   }
 }
 
-// Loading Spinner
-.loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-
-  &__spinner {
-    width: 40px;
-    height: 40px;
-    border: 3px solid $border-color;
-    border-top: 3px solid $primary-color;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 1rem;
-  }
-
-  &__text {
-    color: $text-secondary;
-    font-size: 0.875rem;
-  }
-}
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
 

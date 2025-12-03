@@ -1,16 +1,31 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
-  import { computed, reactive, watch } from 'vue';
+  import { computed, reactive, watch, watchEffect } from 'vue';
   import type { Rules } from 'async-validator';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
   import { INPUTS_USER_ADDRESS } from '@/data/designations.ts';
 
-  const user = reactive({ country: '', zip: '', city: '', address: '' });
+  interface Props {
+    options?: Record<string, unknown>;
+    resetKey: number;
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    options: () => ({}),
+    resetKey: 0
+  });
+
+  const emit = defineEmits<{
+    (e: 'update:isValid', value: boolean): void;
+    (e: 'update:user', value: typeof user): void;
+  }>();
+
+  const user = reactive({ country: '', state: '', zip: '', city: '', street: '' });
   const touched = reactive({
     country: false,
+    state: false,
     zip: false,
     city: false,
-    address: false
+    street: false
   });
   const markTouched = (field: keyof typeof touched) => {
     touched[field] = true;
@@ -18,12 +33,49 @@
 
   const rules: Rules = {
     country: [{ type: 'string', min: 3, max: 20, required: true, message: 'Country is required' }],
+    state: [{ type: 'string', min: 2, max: 20, required: true, message: 'State/Province is required' }],
     zip: [{ type: 'string', min: 3, max: 20, required: true, message: 'ZIP Code is required' }],
     city: [{ type: 'string', min: 3, max: 20, required: true, message: 'City is required' }],
-    address: [{ type: 'string', min: 3, max: 100, required: true, message: 'Address is required' }]
+    street: [{ type: 'string', min: 3, max: 100, required: true, message: 'Street is required' }]
   };
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
   const isValidForm = computed(() => pass.value && isFinished.value);
+  watchEffect(() => {
+    emit('update:isValid', isValidForm.value);
+  });
+
+  const resetForms = () => {
+    // Reset user data
+    Object.keys(user).forEach((key) => {
+      user[key as keyof typeof user] = '';
+    });
+    Object.keys(touched).forEach((key) => {
+      touched[key as keyof typeof touched] = false;
+    });
+  };
+  watch(
+    user,
+    (val) => {
+      emit('update:user', { ...val });
+    },
+    { deep: true }
+  );
+  watch(
+    () => props.resetKey,
+    () => resetForms()
+  );
+  const setInitialValues = () => {
+    if (props.options) {
+      const copy = Object.assign({}, props.options);
+      user.country = (copy.country as string) || '';
+      user.state = (copy.state as string) || '';
+      user.zip = (copy.zip as string) || '';
+      user.city = (copy.city as string) || '';
+      user.street = (copy.street as string) || '';
+    }
+  };
+  // Set initial values on mount
+  setInitialValues();
 </script>
 
 <template>
@@ -48,6 +100,27 @@
       </div>
       <div class="form__error" v-if="errorFields?.country?.length && touched.country">
         {{ errorFields?.country?.[0]?.message }}
+      </div>
+    </div>
+    <!-- State/Province -->
+    <div class="form__block state">
+      <label class="form__label" for="state">{{ INPUTS_USER_ADDRESS.state.label }}</label>
+      <div class="form__input-wrapper">
+        <img
+          class="simple-icon"
+          v-if="INPUTS_USER_ADDRESS.state.icon"
+          :src="INPUTS_USER_ADDRESS.state.icon"
+          alt="State/Province icon" />
+        <input
+          :class="['form__input', { 'form__input--error': errorFields?.state?.length && touched.state }]"
+          id="state"
+          v-model.trim="user.state"
+          type="text"
+          :placeholder="INPUTS_USER_ADDRESS.state.placeholder"
+          @blur="markTouched('state')" />
+      </div>
+      <div class="form__error" v-if="errorFields?.state?.length && touched.state">
+        {{ errorFields?.state?.[0]?.message }}
       </div>
     </div>
     <!-- ZIP Code -->
@@ -83,21 +156,21 @@
       <div class="form__error" v-if="errorFields?.city?.length && touched.city">{{ errorFields?.city?.[0]?.message }}</div>
     </div>
 
-    <!-- Address -->
-    <div class="form__block address">
-      <label class="form__label" for="address">{{ INPUTS_USER_ADDRESS.address.label }}</label>
+    <!-- Street -->
+    <div class="form__block street">
+      <label class="form__label" for="street">{{ INPUTS_USER_ADDRESS.street.label }}</label>
       <div class="form__input-wrapper">
-        <img class="simple-icon" :src="INPUTS_USER_ADDRESS.address.icon" alt="Address icon" />
+        <img class="simple-icon" :src="INPUTS_USER_ADDRESS.street.icon" alt="Street icon" />
         <input
-          :class="['form__input', { 'form__input--error': errorFields?.address?.length && touched.address }]"
-          id="address"
-          v-model.trim="user.address"
+          :class="['form__input', { 'form__input--error': errorFields?.street?.length && touched.street }]"
+          id="street"
+          v-model.trim="user.street"
           type="text"
-          :placeholder="INPUTS_USER_ADDRESS.address.placeholder"
-          @blur="markTouched('address')" />
+          :placeholder="INPUTS_USER_ADDRESS.street.placeholder"
+          @blur="markTouched('street')" />
       </div>
-      <div class="form__error" v-if="errorFields?.address?.length && touched.address">
-        {{ errorFields?.address?.[0]?.message }}
+      <div class="form__error" v-if="errorFields?.street?.length && touched.street">
+        {{ errorFields?.street?.[0]?.message }}
       </div>
     </div>
   </form>
@@ -110,18 +183,18 @@
     &__block:not(.address) {
       width: calc(100% / 3 - 0.75rem);
     }
-    &__block.address {
-      width: 100%;
+    &__block.city {
+      width: calc(100% / 3 - 0.75rem);
+    }
+    &__block.street {
+      flex: 1;
     }
   }
   @media screen and (max-width: $breakpoint-md) {
     // 768px
     .form {
-      &__block:not(.city, .address) {
+      &__block:not(.street) {
         width: calc(100% / 2 - 0.75rem);
-      }
-      &__block.city {
-        width: 100%;
       }
     }
   }

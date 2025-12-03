@@ -1,53 +1,119 @@
 <script setup lang="ts">
-  import { computed, reactive } from 'vue';
+  import { computed, reactive, watch, watchEffect } from 'vue';
   import type { Rules } from 'async-validator';
   import { useAsyncValidator } from '@vueuse/integrations/useAsyncValidator';
   import { INPUTS_USER_NAME } from '@/data/designations.ts';
   import AvatarUploader from '@/components/AvatarUploader.vue';
 
-  const user = reactive({ name: '', middleName: '', secondName: '' });
+  interface Props {
+    options?: Record<string, unknown>;
+    resetKey: number;
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    options: () => ({}),
+    resetKey: 0
+  });
+
+  const emit = defineEmits<{
+    (e: 'update:isValid', value: boolean): void;
+    (e: 'update:user', value: typeof user): void;
+  }>();
+  const user = reactive({ firstName: '', middleName: '', lastName: '', avatar: '', avatarUrl: '' });
   const touched = reactive({
-    name: false,
+    firstName: false,
     middleName: false,
-    secondName: false
+    lastName: false,
+    avatar: false
   });
   const markTouched = (field: keyof typeof touched) => {
     touched[field] = true;
   };
 
   const rules: Rules = {
-    name: [{ type: 'string', min: 3, max: 20, required: true, message: 'Name is required' }],
-    middleName: [{ type: 'string', min: 3, max: 20, required: false }],
-    secondName: [{ type: 'string', min: 3, max: 20, required: true, message: 'Second Name is required' }]
+    firstName: [
+      { required: true, type: 'string', message: 'Name is required' },
+      { min: 3, max: 20, message: 'Must be between 3 and 20 characters' }
+    ],
+    middleName: [{ type: 'string', min: 3, max: 20, required: false, message: 'Must be between 3 and 20 characters' }],
+    lastName: [
+      { required: true, type: 'string', message: 'Last Name is required' },
+      { min: 3, max: 20, message: 'Must be between 3 and 20 characters' }
+    ]
   };
-
   const { pass, isFinished, errorFields } = useAsyncValidator(user, rules);
   const isValidForm = computed(() => pass.value && isFinished.value);
+  watchEffect(() => {
+    emit('update:isValid', isValidForm.value);
+  });
+
+  const resetForms = () => {
+    // Reset user data
+    Object.keys(user).forEach((key) => {
+      user[key as keyof typeof user] = '';
+    });
+    Object.keys(touched).forEach((key) => {
+      touched[key as keyof typeof touched] = false;
+    });
+  };
+  watch(
+    user,
+    (val) => {
+      emit('update:user', { ...val });
+    },
+    { deep: true }
+  );
+  // Reset form when resetKey changes
+  watch(
+    () => props.resetKey,
+    () => resetForms()
+  );
+  const setInitialValues = () => {
+    if (props.options) {
+      const copy = Object.assign({}, props.options);
+      user.firstName = (copy.firstName as string) || '';
+      user.middleName = (copy.middleName as string) || '';
+      user.lastName = (copy.lastName as string) || '';
+      user.avatar = (copy.avatar as string) || '';
+    }
+  };
+  // Set initial values on mount
+  setInitialValues();
 </script>
 
 <template>
   <form class="form user-name">
     <div class="form__indicator" :class="{ form_ready: isValidForm }"></div>
     <div class="form__column-wrapper avatar">
-      <AvatarUploader class="form__avatar-uploader" />
+      <AvatarUploader
+        class="form__avatar-uploader"
+        :resetKey="props.resetKey"
+        :options="{ avatar: user.avatar, avatarUrl: '' }"
+        v-model:avatar="user.avatar"
+        @update:avatar="markTouched('avatar')" />
     </div>
     <!-- First, Middle and Second Name -->
     <div class="form__column-wrapper names">
       <div class="form__wrapper">
         <!-- First name -->
-        <div class="form__block name">
-          <label class="form__label" for="name">{{ INPUTS_USER_NAME.name.label }}</label>
+        <div class="form__block first-name">
+          <label class="form__label" for="first-name">{{ INPUTS_USER_NAME.firstName.label }}</label>
           <div class="form__input-wrapper">
-            <img class="simple-icon" v-if="INPUTS_USER_NAME.name.icon" :src="INPUTS_USER_NAME.name.icon" alt="Name icon" />
+            <img
+              class="simple-icon"
+              v-if="INPUTS_USER_NAME.firstName.icon"
+              :src="INPUTS_USER_NAME.firstName.icon"
+              alt="Name icon" />
             <input
-              :class="['form__input', { 'form__input--error': errorFields?.name?.length && touched.name }]"
-              id="name"
-              v-model.trim="user.name"
+              :class="['form__input', { 'form__input--error': errorFields?.firstName?.length && touched.firstName }]"
+              id="first-name"
+              v-model.trim="user.firstName"
               type="text"
-              :placeholder="INPUTS_USER_NAME.name.placeholder"
-              @blur="markTouched('name')" />
+              :placeholder="INPUTS_USER_NAME.firstName.placeholder"
+              @blur="markTouched('firstName')" />
           </div>
-          <div class="form__error" v-if="errorFields?.name?.length && touched.name">{{ errorFields?.name?.[0]?.message }}</div>
+          <div class="form__error" v-if="errorFields?.firstName?.length && touched.firstName">
+            {{ errorFields?.firstName?.[0]?.message }}
+          </div>
         </div>
         <!-- Middle name -->
         <div class="form__block middle-name">
@@ -71,25 +137,25 @@
           </div>
         </div>
       </div>
-      <!-- Second name -->
-      <div class="form__block second-name">
-        <label class="form__label" for="second-name">{{ INPUTS_USER_NAME.secondName.label }}</label>
+      <!-- Last name -->
+      <div class="form__block last-name">
+        <label class="form__label" for="last-name">{{ INPUTS_USER_NAME.lastName.label }}</label>
         <div class="form__input-wrapper">
           <img
             class="simple-icon"
-            v-if="INPUTS_USER_NAME.secondName.icon"
-            :src="INPUTS_USER_NAME.secondName.icon"
-            alt="Second Name icon" />
+            v-if="INPUTS_USER_NAME.lastName.icon"
+            :src="INPUTS_USER_NAME.lastName.icon"
+            alt="Last Name icon" />
           <input
-            :class="['form__input', { 'form__input--error': errorFields?.secondName?.length && touched.secondName }]"
-            id="second-name"
-            v-model.trim="user.secondName"
+            :class="['form__input', { 'form__input--error': errorFields?.lastName?.length && touched.lastName }]"
+            id="last-name"
+            v-model.trim="user.lastName"
             type="text"
-            :placeholder="INPUTS_USER_NAME.secondName.placeholder"
-            @blur="markTouched('secondName')" />
+            :placeholder="INPUTS_USER_NAME.lastName.placeholder"
+            @blur="markTouched('lastName')" />
         </div>
-        <div class="form__error" v-if="errorFields?.secondName?.length && touched.secondName">
-          {{ errorFields?.secondName?.[0]?.message }}
+        <div class="form__error" v-if="errorFields?.lastName?.length && touched.lastName">
+          {{ errorFields?.lastName?.[0]?.message }}
         </div>
       </div>
     </div>

@@ -1,0 +1,23 @@
+{
+  "uuid": "123e4567-e89b-12d3-a456-426614174000",
+  "userName": {
+    "firstName": "Michael",
+    "middleName": "A.",
+    "lastName": "Shpigelman",
+    "avatar": null,
+    "avatarUrl": ""
+  },
+  "userMeta": {
+    "email": "michael.a@example.com",
+    "phone": "+15551234567",
+    "birthDate": "1985-05-10",
+    "gender": "male"
+  },
+  "userAddress": {
+    "street": "1234 Elm Street",
+    "city": "Milwaukee",
+    "state": "WI",
+    "zip": "53202",
+    "country": "USA"
+  }
+}
