@@ -80,7 +80,7 @@ export const INPUTS_USER_META: InputsUserMeta = {
     icon: iconsMap['gender-male-female.svg'],
     label: 'Gender',
     placeholder: 'Select Gender',
-    options: ['male', 'female', 'other', 'not selected', '']
+    options: ['male', 'female', 'other', 'not selected']
   }
 };
 

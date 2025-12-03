@@ -92,26 +92,40 @@
     // notify children
     resetKey.value += 1;
   };
-
+  const initialUpdateProfile = (profile: Profile) => {
+    if (profile.userName) updateProfile('userName', profile.userName);
+    if (profile.userMeta) updateProfile('userMeta', profile.userMeta);
+    if (profile.userAddress) updateProfile('userAddress', profile.userAddress);
+    if (profile.uuid) profile.uuid = profile.uuid;
+  };
+  const initialUpdateCard = (card: UserCard) => {
+    if (card) {
+      updateProfile('userCard', card);
+    }
+  };
+  const onCancelEdit = () => {
+    if (props.options?.incomingProfile) {
+      initialUpdateProfile(props.options.incomingProfile);
+    }
+    if (props.options?.incomingCard) {
+      initialUpdateCard(props.options.incomingCard);
+    }
+    currentState.value = 'view';
+  };
   // Watchers
   watch(
     () => props.options?.incomingProfile,
-    (incoming) => {
-      if (!incoming) return;
-      if (incoming.userName) updateProfile('userName', incoming.userName);
-      if (incoming.userMeta) updateProfile('userMeta', incoming.userMeta);
-      if (incoming.userAddress) updateProfile('userAddress', incoming.userAddress);
-      if (incoming.uuid) profile.uuid = incoming.uuid;
+    (profile) => {
+      if (profile) initialUpdateProfile(profile);
     },
-    { immediate: true }
+    { immediate: true, deep: true }
   );
-
   watch(
     () => props.options?.incomingCard,
-    (incoming) => {
-      if (incoming) updateProfile('userCard', incoming);
+    (card) => {
+      if (card) initialUpdateCard(card);
     },
-    { immediate: true }
+    { immediate: true, deep: true }
   );
 </script>
 
@@ -164,18 +178,19 @@
 
       <!-- Action buttons -->
       <div class="actions-block">
-        <div class="actions-block__buttons-group">
-          <template v-if="currentState === 'edit'">
+        <template v-if="currentState === 'edit'">
+          <button class="actions-block__button reset" @click="resetForms">Reset All</button>
+          <div class="actions-block__buttons-group">
             <button class="actions-block__button save" :disabled="!isAllFormsValid" @click="currentState = 'view'">
               Save Changes
             </button>
-            <button class="actions-block__button reset" @click="resetForms">Reset All</button>
-          </template>
+            <button class="actions-block__button cancel" @click="onCancelEdit">Cancel</button>
+          </div>
+        </template>
 
-          <template v-else>
-            <button class="actions-block__button edit" @click="currentState = 'edit'">Edit Profile</button>
-          </template>
-        </div>
+        <template v-else>
+          <button class="actions-block__button edit" @click="currentState = 'edit'">Edit Profile</button>
+        </template>
       </div>
     </div>
   </div>
@@ -223,7 +238,7 @@
 
   .actions-block {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin: 1rem 0;
 
     &__buttons-group {
@@ -238,8 +253,11 @@
       border: 1px solid transparent;
       transition: $transition;
       cursor: pointer;
-
-      &.save, &.edit {
+      &.edit {
+        margin-left: auto;
+      }
+      &.save,
+      &.edit {
         background-color: $primary-color;
         color: $surface;
         &:hover {
@@ -251,11 +269,18 @@
         }
       }
 
-      &.reset {
+      &.cancel {
         background-color: $border-color;
         color: $text-primary;
         &:hover {
           background: color.adjust($border-color, $lightness: -5%);
+        }
+      }
+      &.reset {
+        background-color: $surface-secondary;
+        color: $error-color;
+        &:hover {
+          background: color.adjust($surface-secondary, $lightness: -5%);
         }
       }
     }

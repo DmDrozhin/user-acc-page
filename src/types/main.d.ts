@@ -1,4 +1,4 @@
-type GenderOptions = 'male' | 'female' | 'other' | 'not selected' | '';
+type GenderOptions = 'male' | 'female' | 'other' | 'not selected';
 type paymentSystem = 'visa' | 'mastercard' | 'amex' | 'discover' | 'mir' | 'unionpay' |'unknown';
 interface UserName {
   firstName: string;

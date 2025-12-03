@@ -57,6 +57,7 @@
     Object.keys(user).forEach((key) => {
       user[key as keyof typeof user] = '';
     });
+    user.gender = 'not selected';
     Object.keys(touched).forEach((key) => {
       touched[key as keyof typeof touched] = false;
     });
