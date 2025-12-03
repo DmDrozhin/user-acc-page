@@ -19,17 +19,11 @@ export const ACCOUNT_PAGE_HEADER: AccPageHeader = {
   iconStatic: iconsMap['account-file-text.svg'],
   iconEdit: iconsMap['account-edit.svg']
 };
-
-// Form input validation params User Name
-type GenderOptions = 'Not selected' | 'Male' | 'Female' | 'Other';
-// Bank Card Type
-type paymentSystem = 'visa' | 'mastercard' | 'amex' | 'discover' | 'mir' | 'unionpay' |'unknown';
-
-interface FieldInput {
+interface FieldInput<T = unknown> {
   icon?: string;
   label?: string;
   placeholder?: string;
-  options?: GenderOptions[];
+  options?: T[];
   minimum?: number;
   maximum?: number;
   paymentSystem?: { [key in paymentSystem]: string | undefined };
@@ -64,7 +58,7 @@ interface InputsUserMeta {
   email: FieldInput;
   phone: FieldInput;
   birthDate: FieldInput;
-  gender: FieldInput;
+  gender: FieldInput<GenderOptions>;
 }
 export const INPUTS_USER_META: InputsUserMeta = {
   email: {
@@ -86,7 +80,7 @@ export const INPUTS_USER_META: InputsUserMeta = {
     icon: iconsMap['gender-male-female.svg'],
     label: 'Gender',
     placeholder: 'Select Gender',
-    options: ['Not selected', 'Male', 'Female', 'Other']
+    options: ['male', 'female', 'other', 'not selected', '']
   }
 };
 

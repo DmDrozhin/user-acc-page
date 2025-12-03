@@ -1,17 +1,17 @@
-type Avatar = string | null;
-
+type GenderOptions = 'male' | 'female' | 'other' | 'not selected' | '';
+type paymentSystem = 'visa' | 'mastercard' | 'amex' | 'discover' | 'mir' | 'unionpay' |'unknown';
 interface UserName {
   firstName: string;
   middleName: string;
   lastName: string;
   avatarUrl?: string;
-  avatar?: null | string;
+  avatar?: string | null;
 }
 interface UserMeta {
   email: string;
   phone: string;
   birthDate: string;
-  gender: string;
+  gender: GenderOptions;
 }
 interface UserAddress {
   street: string;

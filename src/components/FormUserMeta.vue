@@ -22,7 +22,7 @@
     phone: '',
     email: '',
     birthDate: '',
-    gender: ''
+    gender: 'not selected'
   });
   const touched = reactive({
     phone: false,
@@ -216,5 +216,8 @@
     color: $text-secondary;
     transition: 0.4s color;
     filter: opacity(0.5);
+  }
+  #gender {
+    text-transform: capitalize;
   }
 </style>

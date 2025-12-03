@@ -48,7 +48,7 @@
       phone: '',
       email: '',
       birthDate: '',
-      gender: ''
+      gender: 'not selected'
     },
     userAddress: {
       street: '',

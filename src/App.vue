@@ -35,6 +35,7 @@
       saveProfileData();
       isLoading.userProfile = false;
     }, 500);
+    // Simulate fetching card data
     isLoading.userCard = true;
     setTimeout(() => {
       saveCardData();
