@@ -133,8 +133,8 @@
   <div class="profile">
     <!-- Header -->
     <div class="header-block">
-      <img class="title-icon" :src="ACCOUNT_PAGE_HEADER.iconStatic" alt="User Icon" />
-
+      <img class="title-icon" v-if="currentState === 'view'" :src="ACCOUNT_PAGE_HEADER.iconStatic" alt="review profile icon" />
+      <img class="title-icon" v-else :src="ACCOUNT_PAGE_HEADER.iconEdit" alt="edit profile icon" />
       <div class="header-block__wrapper">
         <div class="header-block__title">{{ ACCOUNT_PAGE_HEADER.title }}</div>
         <div class="header-block__subtitle">{{ ACCOUNT_PAGE_HEADER.subtitle }}</div>
