@@ -239,13 +239,14 @@
   .actions-block {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem 1rem;
     margin: 1rem 0;
 
     &__buttons-group {
       display: flex;
       gap: 1rem;
     }
-
     &__button {
       min-width: calc($spacing-xl * 4);
       padding: 0.5rem 1rem;
@@ -281,6 +282,17 @@
         color: $error-color;
         &:hover {
           background: color.adjust($surface-secondary, $lightness: -5%);
+        }
+      }
+    }
+    @media screen and (max-width: $breakpoint-sm) {
+      .actions-block {
+        &__buttons-group {
+          flex-direction: column;
+          width: 100%;
+        }
+        &__button:not(.actions-block__button.reset) {
+          width: 100%;
         }
       }
     }
