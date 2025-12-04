@@ -18,13 +18,14 @@
     (e: 'update:user', value: typeof user): void;
   }>();
 
-  const user = reactive({
+  const defaultProfile = (): UserMeta => ({
     phone: '',
     email: '',
     birthDate: '',
-    gender: 'not selected'
+    gender: 'not selected' as GenderOptions
   });
-  const touched = reactive({
+  const user = reactive<UserMeta>(defaultProfile());
+  const touched = reactive<Record<keyof UserMeta, boolean>>({
     phone: false,
     email: false,
     birthDate: false,
@@ -54,10 +55,7 @@
 
   const resetForms = () => {
     // Reset user meta data
-    Object.keys(user).forEach((key) => {
-      user[key as keyof typeof user] = '';
-    });
-    user.gender = 'not selected';
+    Object.assign(user, defaultProfile());
     Object.keys(touched).forEach((key) => {
       touched[key as keyof typeof touched] = false;
     });

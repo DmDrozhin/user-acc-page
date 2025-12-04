@@ -33,5 +33,5 @@ interface Profile {
   userName: UserName;
   userMeta: UserMeta;
   userAddress: UserAddress;
-  userCard?: userCard;
+  userCard?: UserCard;
 }

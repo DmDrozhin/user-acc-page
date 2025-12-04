@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { computed } from 'vue';
   import { PREVIEW_PAGE } from '@/data/designations';
-  import { formatPhone, formatCardNumber } from '@/utils/utils';
+  import { formatPhone, formatCardNumber, getIconPath } from '@/utils/utils';
 
   // Props
   interface Props {
@@ -54,6 +54,7 @@
       return `**** **** **** ${formatCardNumber(mainOptions.value.card?.cardNumber || '', '#### #### #### ####').slice(-4)}`;
     }
   });
+const placeHolderIcon = getIconPath('information-variant.svg');
 </script>
 
 <template>
@@ -79,28 +80,28 @@
     <!-- META INFO -->
     <section class="card" v-if="mainOptions.profile?.userMeta">
       <div class="card__title">
-        <img :src="PREVIEW_PAGE.sectionMeta.iconInfo" class="title-icon" />
+        <img :src="PREVIEW_PAGE.sectionMeta.iconInfo || placeHolderIcon" class="title-icon" />
         <span>{{ PREVIEW_PAGE.sectionMeta.title }}</span>
       </div>
       <hr class="card__divider" />
       <div class="info-grid">
         <div class="info-row">
-          <img class="small-icon" :src="PREVIEW_PAGE.sectionMeta.iconPhone" />
+          <img class="small-icon" :src="PREVIEW_PAGE.sectionMeta.iconPhone || placeHolderIcon" />
           <span>{{ formatPhoneNumber(mainOptions.profile.userMeta.phone) }}</span>
         </div>
 
         <div class="info-row">
-          <img class="small-icon" :src="PREVIEW_PAGE.sectionMeta.iconEmail" />
+          <img class="small-icon" :src="PREVIEW_PAGE.sectionMeta.iconEmail || placeHolderIcon" />
           <span>{{ mainOptions.profile.userMeta.email }}</span>
         </div>
 
         <div class="info-row">
-          <img class="small-icon" :src="PREVIEW_PAGE.sectionMeta.iconBirthDate" />
+          <img class="small-icon" :src="PREVIEW_PAGE.sectionMeta.iconBirthDate || placeHolderIcon" />
           <span>{{ mainOptions.profile.userMeta.birthDate }}</span>
         </div>
 
         <div class="info-row">
-          <img class="small-icon" :src="genderIcon" />
+          <img class="small-icon" :src="genderIcon || placeHolderIcon" />
           <span class="info-row__gender">{{ mainOptions.profile.userMeta.gender }}</span>
         </div>
       </div>
@@ -109,7 +110,7 @@
     <!-- ADDRESS -->
     <section class="card" v-if="mainOptions.profile?.userAddress">
       <div class="card__title">
-        <img class="title-icon" :src="PREVIEW_PAGE.sectionAddress.titleIcon" />
+        <img class="title-icon" :src="PREVIEW_PAGE.sectionAddress.titleIcon || placeHolderIcon" />
         <span>Address</span>
       </div>
       <hr class="card__divider" />
@@ -125,28 +126,28 @@
     <!-- CARD INFO -->
     <section class="card" v-if="mainOptions.card">
       <div class="card__title">
-        <img class="title-icon" :src="PREVIEW_PAGE.sectionCard.titleIcon" />
+        <img class="title-icon" :src="PREVIEW_PAGE.sectionCard.titleIcon || placeHolderIcon" />
         <span>Bank Card</span>
       </div>
       <hr class="card__divider" />
       <div class="info-grid">
         <div class="info-row">
-          <img class="small-icon" :src="PREVIEW_PAGE.sectionCard.iconNumber" />
+          <img class="small-icon" :src="PREVIEW_PAGE.sectionCard.iconNumber || placeHolderIcon" />
           <span>{{ maskedCardNumber }}</span>
         </div>
 
         <div class="info-row">
-          <img class="small-icon" :src="PREVIEW_PAGE.sectionCard.iconHolder" />
+          <img class="small-icon" :src="PREVIEW_PAGE.sectionCard.iconHolder || placeHolderIcon" />
           <span>{{ mainOptions.card.holderName }}</span>
         </div>
 
         <div class="info-row">
-          <img class="small-icon" :src="PREVIEW_PAGE.sectionCard.iconExpiry" />
+          <img class="small-icon" :src="PREVIEW_PAGE.sectionCard.iconExpiry || placeHolderIcon" />
           <span>{{ mainOptions.card.expiry }}</span>
         </div>
 
         <div class="info-row">
-          <img class="tm-icon" :src="paySystemIcon" />
+          <img class="tm-icon" :src="paySystemIcon || placeHolderIcon" />
           <span class="info-row__pay-system">{{ mainOptions.card.paySystem }}</span>
         </div>
       </div>

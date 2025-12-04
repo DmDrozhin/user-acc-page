@@ -10,10 +10,14 @@
   const incomingProfile = ref<Profile | null>(null);
   const incomingCard = ref<UserCard | null>(null);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const outgoingProfile = ref<Profile | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const outgoingCard = ref<UserCard | null>(null);
+  const saveProfile = (profile: Profile) => {
+    const { userCard, ...rest } = profile;
+
+    incomingProfile.value = { ...rest };
+    incomingCard.value = userCard || null;
+    // For demo purposes, just log to console
+    console.log(incomingProfile.value, incomingCard.value);
+  };
 
   const isLoading = reactive<Record<string, boolean>>({
     userProfile: false,
@@ -56,7 +60,8 @@
     <LoaderModal v-if="isLoading.userProfile || isLoading.userCard" message="Loading user profile..." />
     <UserProfile
       v-if="incomingProfile && !isLoading.userProfile && !isLoading.userCard"
-      :options="{ incomingProfile: incomingProfile, incomingCard: incomingCard, uuid: incomingProfile?.uuid }" />
+      :options="{ incomingProfile: { ...incomingProfile, uuid: incomingProfile.uuid }, incomingCard: incomingCard }"
+      @save:profile="saveProfile" />
   </main>
 </template>
 

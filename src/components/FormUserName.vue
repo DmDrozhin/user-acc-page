@@ -19,18 +19,20 @@
     (e: 'update:user', value: typeof user): void;
   }>();
 
-  const user = reactive({
+  const defaultProfile = (): UserName => ({
     firstName: '',
     middleName: '',
     lastName: '',
-    avatar: '',
+    avatar: null,
     avatarUrl: ''
   });
-  const touched = reactive({
+  const user = reactive<UserName>(defaultProfile());
+  const touched = reactive<Record<keyof UserName, boolean>>({
     firstName: false,
     middleName: false,
     lastName: false,
-    avatar: false
+    avatar: false,
+    avatarUrl: false
   });
   const markTouched = (field: keyof typeof touched) => {
     touched[field] = true;
@@ -53,9 +55,7 @@
 
   const resetForms = () => {
     // Reset user data
-    Object.keys(user).forEach((key) => {
-      user[key as keyof typeof user] = '';
-    });
+    Object.assign(user, defaultProfile());
     Object.keys(touched).forEach((key) => {
       touched[key as keyof typeof touched] = false;
     });

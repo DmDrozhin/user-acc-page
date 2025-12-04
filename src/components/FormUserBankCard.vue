@@ -21,15 +21,18 @@
     (e: 'update:isValid', value: boolean): void;
     (e: 'update:card', value: typeof card): void;
   }>();
-
-  const card = reactive({
+  const defaultProfile = (): UserCard => ({
+    uuid: '',
     cardNumber: '',
     holderName: '',
     expiry: '',
     cvv: '',
     paySystem: ''
   });
-  const touched = reactive({
+  const card = reactive<UserCard>(defaultProfile());
+
+  type TouchedFields = Pick<UserCard, 'cardNumber' | 'holderName' | 'expiry' | 'cvv'>;
+  const touched = reactive<Record<keyof TouchedFields, boolean>>({
     cardNumber: false,
     holderName: false,
     expiry: false,
@@ -113,9 +116,7 @@
 
   const resetForms = () => {
     // Reset card data
-    Object.keys(card).forEach((key) => {
-      card[key as keyof typeof card] = '';
-    });
+    Object.assign(card, defaultProfile());
     Object.keys(touched).forEach((key) => {
       touched[key as keyof typeof touched] = false;
     });
@@ -244,7 +245,7 @@
               :src="INPUTS_BANK_CARD_META.cvv.icon"
               alt="Lock icon" />
             <MaskedInput
-              v-model="card.cvv"
+              v-model="card.cvv as string"
               :mask="cvvMask"
               :type="'password'"
               :placeholder="INPUTS_BANK_CARD_META.cvv.placeholder"
@@ -319,11 +320,11 @@
     &--mastercard {
       background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
-    &--amex {
-      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    &--american-express {
+      background: linear-gradient(135deg, #9cb6ed 0%, #1b71ce 100%);
     }
     &--mir {
-      background: linear-gradient(135deg, #1bb725 0%, #7281cd 100%);
+      background: linear-gradient(135deg, #1bb725 0%, #a0cba1 100%);
     }
     &--discover {
       background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
@@ -332,7 +333,7 @@
       background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
     }
     &--unknown {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      background: linear-gradient(135deg, #4b4b4b 0%, #9a9a9a 100%);
     }
     &__title {
       font-size: $font-size-md;

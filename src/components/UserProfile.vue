@@ -14,7 +14,6 @@
     options?: {
       incomingProfile?: Profile | null;
       incomingCard?: Profile['userCard'] | null;
-      uuid?: string;
     };
   }
   const props = withDefaults(defineProps<Props>(), {
@@ -49,7 +48,7 @@
       phone: '',
       email: '',
       birthDate: '',
-      gender: 'not selected'
+      gender: 'not selected' as GenderOptions
     },
     userAddress: {
       street: '',
@@ -72,10 +71,13 @@
   const profile = reactive<Profile>(defaultProfile());
 
   // Methods
-  const updateProfile = (formName: keyof Profile, newData: Partial<Profile[typeof formName]>) => {
-    const target = profile[formName];
-    if (target && typeof target === 'object') {
-      Object.assign(target, newData);
+  const updateProfile = <K extends keyof Profile>(key: K, value: Partial<Profile[K]> | Profile[K]) => {
+    const current = profile[key];
+
+    if (current && typeof current === 'object' && typeof value === 'object') {
+      Object.assign(current, value);
+    } else {
+      profile[key] = value as Profile[K];
     }
   };
 
@@ -85,25 +87,26 @@
 
   const resetForms = () => {
     Object.assign(profile, defaultProfile());
-
     Object.keys(formsValidated).forEach((key) => {
       formsValidated[key] = false;
     });
-
-    // notify children
+    // notify children components to reset
     resetKey.value += 1;
   };
+  // Initial population of profile data when props change
   const initialUpdateProfile = (profile: Profile) => {
     if (profile.userName) updateProfile('userName', profile.userName);
     if (profile.userMeta) updateProfile('userMeta', profile.userMeta);
     if (profile.userAddress) updateProfile('userAddress', profile.userAddress);
-    if (profile.uuid) profile.uuid = profile.uuid;
+    if (profile.uuid) updateProfile('uuid', profile.uuid);
   };
+  // Initial population of card data when props change
   const initialUpdateCard = (card: UserCard) => {
     if (card) {
       updateProfile('userCard', card);
     }
   };
+  // Cancel edit and revert changes
   const onCancelEdit = () => {
     if (props.options?.incomingProfile) {
       initialUpdateProfile(props.options.incomingProfile);
@@ -180,9 +183,8 @@
           :options="profile.userCard"
           @update:card="(data) => updateProfile('userCard', data)"
           @update:is-valid="(v) => updateFormValidity('userBankCard', v)" />
-          <hr class="profile__divider" />
+        <hr class="profile__divider" />
       </template>
-
 
       <!-- Action buttons -->
       <div class="actions-block">
@@ -192,7 +194,10 @@
             {{ ACTION_BUTTONS.reset.label }}
           </button>
           <div class="actions-block__buttons-group">
-            <button class="actions-block__button save" :disabled="!isAllFormsValid" @click="currentState = 'view'">
+            <button
+              class="actions-block__button save"
+              :disabled="!isAllFormsValid"
+              @click="((currentState = 'view'), $emit('save:profile', profile))">
               <img class="button-icon save" :src="ACTION_BUTTONS.save.icon" alt="save profile icon" />
               {{ ACTION_BUTTONS.save.label }}
             </button>
