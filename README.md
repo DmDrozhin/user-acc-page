@@ -1,14 +1,16 @@
 # User Account Page — Vue 3 + Vite
 
-A modern **Vue 3** + **Vite** project for building a user profile page with structured sections, responsive UI, mock API data, and modular components.
+A modern and modular **Vue 3 + Vite** project for building a fully featured user account page.
+Includes profile viewing, editing, validation, avatar upload with cropping, phone formatting, and UI utilities.
 
 This project includes:
 
 * User profile viewer
 * Editable profile fields
 * Avatar upload & cropping
-* Validation for back cards
-* Validation for form inputs
+* Validation for bank cards
+* Validation for general form inputs
+* Automatic detection of card payment system
 * Phone formatter utilities
 * Mock backend data
 * Modular Vue components
@@ -19,14 +21,15 @@ This project includes:
 
 * **Vue 3 Composition API**
 * **TypeScript**
-* **Vite** (dev server + bundler)
-* **SCSS** (styling)
+* **Vite** (fast dev server + bundler)
+* **SCSS** (component-level styling)
 
-## 🛠️ Libs
-* **VueUse/integrations** (helpers)
-* **vue-advanced-cropper** (crop uploaded image)
-* **Card-validator** (back card validator)
-* **Async-validator** (inputs validator)
+## 🛠️ Libraries Used
+
+* **VueUse / integrations** — utility composables
+* **vue-advanced-cropper** — avatar crop tool
+* **card-validator** — bank card validation & card type detection
+* **async-validator** — form input validation
 
 ---
 
@@ -49,6 +52,7 @@ project/
 ├─ index.html               # main template
 └─ vite.config.ts           # Vite config
 ```
+
 ---
 
 ## 🧩 Key Features
@@ -56,30 +60,46 @@ project/
 ### ✔ User Profile View
 
 * Displays avatar, name, email, phone
-* Responsive layout (grid + flex)
+* Responsive layout (flex + grid)
 
 ### ✔ Avatar Upload & Crop
 
-* Drag & drop upload
-* Image cropping modal
-* Error display via toast/badge
+* Drag & drop support
+* Cropping modal for avatar images
+* Error display via toast/badge/text message
 
 ### ✔ Phone Formatter Utility
 
-Formats phone numbers for **Ukraine, USA, and others**.
+Formats phone numbers for **Ukraine, USA, and multiple international formats**.
+
+### ✔ Bank Card Validation
+
+* Validates card number, expiration, CVC
+* Detects card brand (Visa, MasterCard, etc.)
+* Built using **card-validator** and **async-validator**
 
 ### ✔ Mock Data Support
 
-Located in `src/data/mockProfile.json` and `src/data/mockCards.json`.
-Great for prototyping or testing backend-less environments.
+Mock data is stored in:
+
+* `src/data/mockProfile.json`
+* `src/data/mockCards.json`
+
+Perfect for development without backend.
 
 ### ✔ Dynamic UI Styling
 
-Backgrounds, shadows, and colors update via reactive bindings.
+UI backgrounds, shadows, and colors adjust reactively via props and bindings.
 
 ---
 
 ## 🧪 Development Notes
 
-* Works with VS Code (recommended extensions: Vue, TypeScript, Volar)
-* Uses SCSS modules for component-specific styles
+* Optimized for **VS Code** (recommended extensions: Vue, TypeScript, Volar)
+* Uses SCSS modules for scoped component styling
+* Code structure is modular and scalable
+* Easily extendable with Vue Router or API layer
+
+---
+
+If you want to add installation steps, screenshots, API documentation, or demo GIFs — just tell me, and I’ll expand the README.
