@@ -82,7 +82,7 @@
         message: 'Invalid card number'
       }
     ],
-    cardHolder: [
+    holderName: [
       { required: true, message: 'Card holder name is required' },
       { min: 3, max: 50, message: 'Name must be 3-50 characters' }
     ],

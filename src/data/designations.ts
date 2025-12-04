@@ -7,16 +7,16 @@ const iconsMap = createAssetMap(icons);
 // Form input Header designations
 interface AccPageHeader {
   title: string;
-  subtitle: string;
-  description: string;
-  iconStatic?: string;
+  subtitleView: string;
+  subtitleEdit: string;
+  iconView?: string;
   iconEdit?: string;
 }
 export const ACCOUNT_PAGE_HEADER: AccPageHeader = {
   title: 'User Account Page',
-  subtitle: 'Manage Your Account Settings',
-  description: 'A page to manage user account settings and information.',
-  iconStatic: iconsMap['account-file-text.svg'],
+  subtitleView: 'View Your Account Information',
+  subtitleEdit: 'Manage Your Account Settings',
+  iconView: iconsMap['account.svg'],
   iconEdit: iconsMap['account-edit.svg']
 };
 interface FieldInput<T = unknown> {
@@ -163,5 +163,91 @@ export const INPUTS_BANK_CARD_META: InputsBankCard = {
       unionpay: iconsMap['unionPay.svg'],
       unknown: ''
     }
+  }
+};
+// Preview Page designations and icons
+interface PreviewPage {
+  sectionName: {
+    title: string;
+    titleIcon?: string;
+  };
+  sectionMeta: {
+    title: string;
+    iconInfo?: string;
+    iconPhone?: string;
+    iconEmail?: string;
+    iconBirthDate?: string;
+    iconGenderMale?: string;
+    iconGenderFemale?: string;
+    iconGenderOther?: string;
+  };
+  sectionAddress: {
+    title: string;
+    titleIcon?: string;
+  };
+  sectionCard: {
+    title: string;
+    titleIcon?: string;
+    iconHolder?: string;
+    iconNumber?: string;
+    iconExpiry?: string;
+    iconCvv?: string;
+    paySystem: { [key in paymentSystem]: string | undefined };
+  };
+}
+export const PREVIEW_PAGE: PreviewPage = {
+  sectionName: {
+    title: '',
+    titleIcon: iconsMap['account.svg'],
+  },
+  sectionMeta: {
+    title: 'User Info',
+    iconInfo: iconsMap['information-variant-circle.svg'],
+    iconPhone: iconsMap['phone.svg'],
+    iconEmail: iconsMap['mail.svg'],
+    iconBirthDate: iconsMap['calendar-range.svg'],
+    iconGenderMale: iconsMap['gender-male.svg'],
+    iconGenderFemale: iconsMap['gender-female.svg'],
+    iconGenderOther: iconsMap['gender-male-female.svg'],
+  },
+  sectionAddress: {
+    title: 'Address Details',
+    titleIcon: iconsMap['map-marker-radius.svg'],
+  },
+  sectionCard: {
+    title: 'Bank Card Information',
+    titleIcon: iconsMap['credit-card.svg'],
+    iconHolder: iconsMap['account.svg'],
+    iconNumber: iconsMap['credit-card.svg'],
+    iconExpiry: iconsMap['calendar-clock.svg'],
+    iconCvv: iconsMap['lock.svg'],
+    paySystem: {
+      visa: iconsMap['visa.svg'],
+      mastercard: iconsMap['mastercard.svg'],
+      amex: iconsMap['american_express.svg'],
+      discover: iconsMap['discover_card.svg'],
+      mir: iconsMap['mir.svg'],
+      unionpay: iconsMap['unionPay.svg'],
+      unknown: iconsMap['credit-card-outline.svg']
+    }
+  }
+};
+
+export const ACTION_BUTTONS = {
+  save: {
+    label: 'Save Changes',
+    icon: iconsMap['content-save-outline.svg']
+  },
+  edit: {
+    label: 'Edit Profile',
+    icon: iconsMap['pencil.svg']
+  },
+  reset: {
+    label: 'Reset All',
+    icon: iconsMap['reload.svg']
+  },
+  cancel: {
+    label: 'Cancel',
+    icon: iconsMap['cog-off.svg']
   }
 };

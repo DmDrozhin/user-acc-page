@@ -1,11 +1,13 @@
 <script setup lang="ts">
   import { computed, reactive, ref, watch } from 'vue';
-  import { ACCOUNT_PAGE_HEADER } from '@/data/designations';
+  import { ACCOUNT_PAGE_HEADER, ACTION_BUTTONS } from '@/data/designations';
 
   import FromUserName from '@/components/FormUserName.vue';
   import FormUserMeta from '@/components/FormUserMeta.vue';
   import FormUserAddress from '@/components/FormUserAddress.vue';
   import FormUserBankCard from '@/components/FormUserBankCard.vue';
+
+  import ProfileReview from '@/components/ProfileReview.vue';
 
   // Props
   interface Props {
@@ -15,7 +17,6 @@
       uuid?: string;
     };
   }
-
   const props = withDefaults(defineProps<Props>(), {
     options: () => ({})
   });
@@ -133,17 +134,24 @@
   <div class="profile">
     <!-- Header -->
     <div class="header-block">
-      <img class="title-icon" v-if="currentState === 'view'" :src="ACCOUNT_PAGE_HEADER.iconStatic" alt="review profile icon" />
+      <img class="title-icon" v-if="currentState === 'view'" :src="ACCOUNT_PAGE_HEADER.iconView" alt="review profile icon" />
       <img class="title-icon" v-else :src="ACCOUNT_PAGE_HEADER.iconEdit" alt="edit profile icon" />
       <div class="header-block__wrapper">
         <div class="header-block__title">{{ ACCOUNT_PAGE_HEADER.title }}</div>
-        <div class="header-block__subtitle">{{ ACCOUNT_PAGE_HEADER.subtitle }}</div>
+        <template v-if="currentState === 'view'">
+          <div class="header-block__subtitle" v-if="currentState === 'view'">{{ ACCOUNT_PAGE_HEADER.subtitleView }}</div>
+        </template>
+        <template v-else>
+          <div class="header-block__subtitle">{{ ACCOUNT_PAGE_HEADER.subtitleEdit }}</div>
+        </template>
       </div>
     </div>
 
     <div class="profile__content">
       <!-- VIEW MODE -->
-      <template v-if="currentState === 'view'"></template>
+      <template v-if="currentState === 'view'">
+        <ProfileReview :options="{ userProfile: profile, userCard: profile.userCard, uuid: profile.uuid }" />
+      </template>
 
       <!-- EDIT MODE -->
       <template v-else-if="currentState === 'edit'">
@@ -179,17 +187,27 @@
       <!-- Action buttons -->
       <div class="actions-block">
         <template v-if="currentState === 'edit'">
-          <button class="actions-block__button reset" @click="resetForms">Reset All</button>
+          <button class="actions-block__button reset" @click="resetForms">
+            <img class="button-icon reset" :src="ACTION_BUTTONS.reset.icon" alt="reset profile icon" />
+            {{ ACTION_BUTTONS.reset.label }}
+          </button>
           <div class="actions-block__buttons-group">
             <button class="actions-block__button save" :disabled="!isAllFormsValid" @click="currentState = 'view'">
-              Save Changes
+              <img class="button-icon save" :src="ACTION_BUTTONS.save.icon" alt="save profile icon" />
+              {{ ACTION_BUTTONS.save.label }}
             </button>
-            <button class="actions-block__button cancel" @click="onCancelEdit">Cancel</button>
+            <button class="actions-block__button cancel" @click="onCancelEdit">
+              <img class="button-icon cancel" :src="ACTION_BUTTONS.cancel.icon" alt="cancel edit icon" />
+              {{ ACTION_BUTTONS.cancel.label }}
+            </button>
           </div>
         </template>
 
         <template v-else>
-          <button class="actions-block__button edit" @click="currentState = 'edit'">Edit Profile</button>
+          <button class="actions-block__button edit" @click="currentState = 'edit'">
+            <img class="button-icon edit" :src="ACTION_BUTTONS.edit.icon" alt="edit profile icon" />
+            {{ ACTION_BUTTONS.edit.label }}
+          </button>
         </template>
       </div>
     </div>
@@ -248,6 +266,10 @@
       gap: 1rem;
     }
     &__button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
       min-width: calc($spacing-xl * 4);
       padding: 0.5rem 1rem;
       border-radius: $border-radius-sm;
@@ -278,11 +300,26 @@
         }
       }
       &.reset {
+        position: relative;
         background-color: $surface-secondary;
         color: $error-color;
         &:hover {
           background: color.adjust($surface-secondary, $lightness: -5%);
+          &::before {
+            display: inline-block;
+          }
         }
+      }
+      &.reset::before {
+        content: 'Are you sure?';
+        position: absolute;
+        display: inline-block;
+        width: max-content;
+        bottom: -1rem;
+        left: 50%;
+        font-size: $font-size-sm;
+        transform: translateX(-50%);
+        display: none;
       }
     }
     @media screen and (max-width: $breakpoint-sm) {
@@ -293,6 +330,7 @@
         }
         &__button:not(.actions-block__button.reset) {
           width: 100%;
+          padding: 1rem 2rem;
         }
       }
     }
