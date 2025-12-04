@@ -180,9 +180,9 @@
           :options="profile.userCard"
           @update:card="(data) => updateProfile('userCard', data)"
           @update:is-valid="(v) => updateFormValidity('userBankCard', v)" />
+          <hr class="profile__divider" />
       </template>
 
-      <hr class="profile__divider" />
 
       <!-- Action buttons -->
       <div class="actions-block">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
+  // mock imports
+  import mockCards from './data/mockCards.json';
   import mockProfile from './data/mockProfile.json';
-  import mockCard from './data/mockProfileCard.json';
   // end of mock imports
   import { onMounted, reactive, ref } from 'vue';
   import LoaderModal from './components/LoaderModal.vue';
@@ -23,9 +24,15 @@
       incomingProfile.value = mockProfile as Profile;
     }
   };
+  const randomCard = (): UserCard => {
+    const cards = [...Object.values(mockCards)];
+    const randomIndex = Math.floor(Math.random() * cards.length);
+    return cards[randomIndex] as UserCard;
+  };
   const saveCardData = () => {
-    if (mockCard) {
-      incomingCard.value = mockCard as UserCard;
+    const card = randomCard();
+    if (card) {
+      incomingCard.value = card;
     }
   };
   onMounted(() => {

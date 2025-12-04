@@ -1,0 +1,50 @@
+{
+  "visa": {
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "cardNumber": "4000123456789010",
+    "holderName": "Michael Shpigelman",
+    "expiry": "08/29",
+    "cvv": "123",
+    "paySystem": "visa"
+  },
+  "mastercard": {
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "cardNumber": "5169360026302574",
+    "holderName": "Michael Shpigelman",
+    "expiry": "12/28",
+    "cvv": "456",
+    "paySystem": "mastercard"
+  },
+  "american-express": {
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "cardNumber": "375987654321001",
+    "holderName": "Michael Shpigelman",
+    "expiry": "03/27",
+    "cvv": "1212",
+    "paySystem": "american-express"
+  },
+  "discover": {
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "cardNumber": "6011123456789012",
+    "holderName": "Michael Shpigelman",
+    "expiry": "06/29",
+    "cvv": "555",
+    "paySystem": "discover"
+  },
+  "mir": {
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "cardNumber": "2202202202202204",
+    "holderName": "Michael Shpigelman",
+    "expiry": "08/26",
+    "cvv": "789",
+    "paySystem": "mir"
+  },
+  "unionpay": {
+    "uuid": "123e4567-e89b-12d3-a456-426614174000",
+    "cardNumber": "6288888888888888",
+    "holderName": "Michael Shpigelman",
+    "expiry": "05/27",
+    "cvv": "1111",
+    "paySystem": "unionpay"
+  }
+}

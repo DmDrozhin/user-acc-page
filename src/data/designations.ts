@@ -157,9 +157,9 @@ export const INPUTS_BANK_CARD_META: InputsBankCard = {
     paymentSystem: {
       visa: iconsMap['visa.svg'],
       mastercard: iconsMap['mastercard.svg'],
-      amex: iconsMap['american_express.svg'],
+      'american-express': iconsMap['american_express.svg'],
       discover: iconsMap['discover_card.svg'],
-      mir: iconsMap['mir.svg'],
+      mir: iconsMap['mir_card.svg'],
       unionpay: iconsMap['unionPay.svg'],
       unknown: ''
     }
@@ -224,9 +224,9 @@ export const PREVIEW_PAGE: PreviewPage = {
     paySystem: {
       visa: iconsMap['visa.svg'],
       mastercard: iconsMap['mastercard.svg'],
-      amex: iconsMap['american_express.svg'],
+      'american-express': iconsMap['american_express.svg'],
       discover: iconsMap['discover_card.svg'],
-      mir: iconsMap['mir.svg'],
+      mir: iconsMap['mir_card.svg'],
       unionpay: iconsMap['unionPay.svg'],
       unknown: iconsMap['credit-card-outline.svg']
     }

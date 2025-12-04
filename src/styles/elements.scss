@@ -71,6 +71,9 @@
     color: $text-secondary;
     background: $surface;
     transition: $transition;
+    &:hover {
+      box-shadow: $box-shadow-sm;
+    }
     &:focus {
       outline: none;
       border-color: $border-focus;
@@ -114,6 +117,14 @@
   width: 100%;
   width: 24px;
   height: 24px;
+  border-radius: 50%;
+  filter: opacity(0.5);
+}
+.small-icon {
+  flex-shrink: 0;
+  width: 100%;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   filter: opacity(0.5);
 }

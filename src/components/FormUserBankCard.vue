@@ -69,7 +69,6 @@
       }
     }
   );
-
   // Validation rules using card-validator
   const rules: Rules = {
     cardNumber: [
@@ -324,7 +323,7 @@
       background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
     }
     &--mir {
-      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      background: linear-gradient(135deg, #1bb725 0%, #7281cd 100%);
     }
     &--discover {
       background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
