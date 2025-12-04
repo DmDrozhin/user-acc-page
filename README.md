@@ -1,48 +1,85 @@
-# user-acc-page
+# User Account Page — Vue 3 + Vite
 
-This template should help get you started developing with Vue 3 in Vite.
+A modern **Vue 3** + **Vite** project for building a user profile page with structured sections, responsive UI, mock API data, and modular components.
 
-## Recommended IDE Setup
+This project includes:
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+* User profile viewer
+* Editable profile fields
+* Avatar upload & cropping
+* Validation for back cards
+* Validation for form inputs
+* Phone formatter utilities
+* Mock backend data
+* Modular Vue components
 
-## Recommended Browser Setup
+---
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## 🚀 Tech Stack
 
-## Type Support for `.vue` Imports in TS
+* **Vue 3 Composition API**
+* **TypeScript**
+* **Vite** (dev server + bundler)
+* **SCSS** (styling)
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## 🛠️ Libs
+* **VueUse/integrations** (helpers)
+* **vue-advanced-cropper** (crop uploaded image)
+* **Card-validator** (back card validator)
+* **Async-validator** (inputs validator)
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 📁 Project Structure
 
-## Project Setup
-
-```sh
-npm install
 ```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
+project/
+│
+├─ src/
+│  ├─ assets/               # images, icons, styles
+│  ├─ components/           # UI + feature components
+│  ├─ data/                 # mock JSON data
+│  ├─ composables/          # reusable logic (validators, formatters)
+│  ├─ store/                # Pinia stores
+│  ├─ utils/                # helpers (phone formatter, parsing)
+│  ├─ App.vue               # root component
+│  └─ main.ts               # entry
+│
+├─ public/                  # static assets
+├─ index.html               # main template
+└─ vite.config.ts           # Vite config
 ```
+---
 
-### Type-Check, Compile and Minify for Production
+## 🧩 Key Features
 
-```sh
-npm run build
-```
+### ✔ User Profile View
 
-### Lint with [ESLint](https://eslint.org/)
+* Displays avatar, name, email, phone
+* Responsive layout (grid + flex)
 
-```sh
-npm run lint
-```
+### ✔ Avatar Upload & Crop
+
+* Drag & drop upload
+* Image cropping modal
+* Error display via toast/badge
+
+### ✔ Phone Formatter Utility
+
+Formats phone numbers for **Ukraine, USA, and others**.
+
+### ✔ Mock Data Support
+
+Located in `src/data/mockProfile.json` and `src/data/mockCards.json`.
+Great for prototyping or testing backend-less environments.
+
+### ✔ Dynamic UI Styling
+
+Backgrounds, shadows, and colors update via reactive bindings.
+
+---
+
+## 🧪 Development Notes
+
+* Works with VS Code (recommended extensions: Vue, TypeScript, Volar)
+* Uses SCSS modules for component-specific styles
