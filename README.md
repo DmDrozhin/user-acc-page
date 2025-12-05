@@ -39,11 +39,11 @@ This project includes:
 project/
 │
 ├─ src/
-│  ├─ assets/               # images, icons, styles
+│  ├─ assets/               # images, icons
 │  ├─ components/           # UI + feature components
 │  ├─ data/                 # mock JSON data
-│  ├─ composables/          # reusable logic (validators, formatters)
-│  ├─ store/                # Pinia stores
+|  ├─ styles/               # styles
+│  ├─ types/                # ts types
 │  ├─ utils/                # helpers (phone formatter, parsing)
 │  ├─ App.vue               # root component
 │  └─ main.ts               # entry
